@@ -15,17 +15,19 @@ namespace Documents_backend
             mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Document, DocumentDTO>();
-                cfg.CreateMap<DocumentDTO, Document>();
 
                 cfg.CreateMap<DocumentDataItem, DocumentDataItemDTO>();
                 cfg.CreateMap<DocumentTableCell, DocumentTableCellDTO>();
 
-                cfg.CreateMap<Template, TemplateDTO>();
+                cfg.CreateMap<Template, TemplateDTO>()
+                    .ForMember(dto => dto.TemplateType, act => act.MapFrom(temp => temp.TemplateType.Name));
                 cfg.CreateMap<TemplateField, TemplateFieldDTO>();
                 cfg.CreateMap<TemplateType, TemplateTypeDTO>();
 
                 cfg.CreateMap<User, UserDTO>();
-                cfg.CreateMap<Sign, SignDTO>();
+                cfg.CreateMap<Sign, SignDTO>()
+                    .ForMember(dto => dto.UserName, act => act.MapFrom(sign => $"{sign.User.Lastname} {sign.User.Firstname[0]}."))
+                    .ForMember(dto => dto.DocumentName, act => act.MapFrom(sign => sign.Document.Name));
 
             });
             mapperConfig.AssertConfigurationIsValid();

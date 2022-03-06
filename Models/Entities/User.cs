@@ -34,5 +34,12 @@ namespace Documents_backend.Models
 
         //[Newtonsoft.Json.JsonIgnore]   
         public virtual ICollection<Template> Template { get; set; }
+
+
+        public string GetFIO()
+        {
+            if (Fathersname != null) return $"{Lastname} {Firstname[0]}. {Firstname[0]}.";
+            else return $"{Lastname} {Firstname[0]}.";
+        }
     }
 }

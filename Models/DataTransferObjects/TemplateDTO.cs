@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Documents_backend.Models
 {
@@ -8,12 +9,15 @@ namespace Documents_backend.Models
 
         public string Name { get; set; }
 
-        public int TypeId { get; set; }
-
         public DateTime? UpdateDate { get; set; }
 
         public bool Depricated { get; set; }
 
-        public User User { get; set; }
+        public ICollection<Document> Document { get => null; }
+
+        public string TemplateType { get; set; }
+
+        public int AuthorId { get; set; }
+        public string AuthorName { get; set; }
     }
 }

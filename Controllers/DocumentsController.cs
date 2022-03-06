@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Documents_backend.Models;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Http;
-
 
 namespace Documents_backend.Controllers
 {
@@ -14,7 +14,10 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public IEnumerable<DocumentDTO> Get()
         {
-            return mapper.Map<IEnumerable<DocumentDTO>>(db.Document);
+            var documents = db.Document;
+            if (documents == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return mapper.Map<IEnumerable<DocumentDTO>>(documents);
         }
 
         [HttpGet]
@@ -22,10 +25,8 @@ namespace Documents_backend.Controllers
         {
             Document document = db.Document.Find(id);
             if (document == null)
-                StatusCode(System.Net.HttpStatusCode.NotFound);
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            db.Entry(document).Reference("DocumentDataItem").Load();
-            db.Entry(document).Reference("DocumentTableCell").Load();
             return document;
         }   
 
@@ -38,14 +39,10 @@ namespace Documents_backend.Controllers
 
 
         [HttpPut]
-        public void Put(int id, [FromBody] Document document)
+        public void Put([FromBody] Document document)
         {
-            if (id == document.Id)
-            {
-                db.Entry(document).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-            else BadRequest();
+            db.Entry(document).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
         }
 
         [HttpDelete]

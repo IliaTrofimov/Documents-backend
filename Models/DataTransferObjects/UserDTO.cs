@@ -2,12 +2,14 @@ using System.Collections.Generic;
 
 namespace Documents_backend.Models
 {
-    public partial class UserDTO: User
+    public partial class UserDTO
     {
-        public new ICollection<Document> Document { get => null; }
+        public int Id { get; set; }
 
-        public new ICollection<Sign> Sign { get => null; }
+        public string Firstname { get; set; }
 
-        public new ICollection<Template> Template { get => null; }
+        public string Lastname { get; set; }
+
+        public string Fathersname { get; set; }
     }
 }

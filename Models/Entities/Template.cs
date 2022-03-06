@@ -20,8 +20,10 @@ namespace Documents_backend.Models
         [StringLength(300)]
         public string Name { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
         public int? AuthorId { get; set; }
+
+        [NotMapped]
+        public string AuthorName { get => User != null ? User.GetFIO() : "Неизвестно"; }
 
         [Newtonsoft.Json.JsonIgnore]
         public int TypeId { get; set; }
@@ -36,6 +38,7 @@ namespace Documents_backend.Models
 
         public virtual TemplateType TemplateType { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public virtual User User { get; set; }
 
         public virtual ICollection<TemplateField> TemplateField { get; set; }
