@@ -2,7 +2,7 @@
 using Documents_backend.Models;
 using System.Collections.Generic;
 using System.Web.Http;
-
+using System.Net;
 
 namespace Documents_backend.Controllers
 {
@@ -14,7 +14,10 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public IEnumerable<TemplateDTO> Get()
         {
-            return mapper.Map<IEnumerable<TemplateDTO>>(db.Template);
+            var templates = db.Template;
+            if (templates == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return mapper.Map<IEnumerable<TemplateDTO>>(templates);
         }
 
         [HttpGet]
@@ -22,7 +25,7 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Template.Find(id);
             if (template == null)
-                StatusCode(System.Net.HttpStatusCode.NotFound);
+                throw new HttpResponseException(HttpStatusCode.NotFound);
             return template;
         }
 
@@ -35,14 +38,10 @@ namespace Documents_backend.Controllers
 
 
         [HttpPut]
-        public void Put(int id, [FromBody] Template template)
+        public void Put([FromBody] Template template)
         {
-            if (id == template.Id)
-            {
-                db.Entry(template).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-            else BadRequest();
+            db.Entry(template).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
         }
 
         [HttpDelete]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Linq;
 using AutoMapper;
+using System.Net;
 
 namespace Documents_backend.Controllers
 {
@@ -12,39 +13,53 @@ namespace Documents_backend.Controllers
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
 
-        [HttpGet]   
-        public IEnumerable<SignDTO> Get(int? documentId, int? userId)
+        [HttpGet]
+        public IEnumerable<SignDTO> Get(int? documentId = null, int? userId = null)
         {
             if (documentId == null && userId == null)
-                BadRequest();
-            else if (documentId == null)
-                return mapper.Map<IEnumerable<SignDTO>>(from sign in db.Sign where sign.UserId == userId select sign);
-            else if (userId == null)
-                return mapper.Map<IEnumerable<SignDTO>>(from sign in db.Sign where sign.DocumentId == documentId select sign);
-
-
-            return mapper.Map<IEnumerable<SignDTO>>(db.Sign.Find(documentId, userId));
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (documentId != null && userId != null)
+            {
+                var sign = db.Sign.Find(documentId, userId);
+                if (sign == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                return mapper.Map<IEnumerable<SignDTO>>(new Sign[]{ sign });
+            }
+            else
+            {
+                var signs = from sign in db.Sign
+                            where userId != null && sign.UserId == userId || documentId != null && sign.DocumentId == documentId
+                            select sign;
+                if (signs == null)
+                    throw new HttpResponseException(HttpStatusCode.NoContent);
+                return mapper.Map<IEnumerable<SignDTO>>(signs);
+            }
         }
 
 
         [HttpPost]
-        public void Post([FromBody] SignDTO sign)
+        public void Post([FromBody] int userId, [FromBody] int documentId, [FromBody] bool signed = false)
         {
-           db.Sign.Add(mapper.Map<Sign>(sign));
+           db.Sign.Add(new Sign() { UserId = userId, DocumentId = documentId, Signed = signed});
         }
 
 
         [HttpPut]
-        public void Put([FromBody] SignDTO sign)
+        public void Put([FromBody] int userId, [FromBody] int documentId, [FromBody] bool signed = false)
         {
-            db.Entry(mapper.Map<Sign>(sign)).State = System.Data.Entity.EntityState.Modified;
+            Sign sign = db.Sign.Find(documentId, userId);
+            if (sign == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            sign.Signed = signed;
+            db.Entry(sign).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
         }
 
         [HttpDelete]
-        public void Delete(int id)
+        public void Delete([FromBody] int userId, [FromBody] int documentId)
         {
-            Sign sign = db.Sign.Find(id);
+            Sign sign = db.Sign.Find(documentId, userId);
             if (sign != null)
             {
                 db.Sign.Remove(sign);

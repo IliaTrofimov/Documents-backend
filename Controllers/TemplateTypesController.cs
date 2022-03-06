@@ -1,5 +1,7 @@
-﻿using Documents_backend.Models;
+﻿using AutoMapper;
+using Documents_backend.Models;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Http;
 
 
@@ -8,37 +10,44 @@ namespace Documents_backend.Controllers
     public class TemplateTypesController : ApiController
     {
         DataContext db = new DataContext();
+        Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
         [HttpGet]
-        public IEnumerable<TemplateType> Get()
+        public IEnumerable<TemplateTypeDTO> Get()
         {
-            return db.TemplateType;
+            var types = db.TemplateType;
+            if (types == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return mapper.Map<IEnumerable<TemplateTypeDTO>>(types);
         }
 
         [HttpGet]
         public TemplateType Get(int id)
         {
             TemplateType type = db.TemplateType.Find(id);
+            if (type == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
             return type;
         }
 
 
         [HttpPost]
-        public void Post([FromBody] TemplateType type)
+        public void Post([FromBody] string name)
         {
-            db.TemplateType.Add(type);
+            db.TemplateType.Add(new TemplateType() { Name = name });
         }
 
 
         [HttpPut]
-        public void Put(int id, [FromBody] TemplateType type)
+        public void Put([FromBody] int id, [FromBody] string name)
         {
-            if (id == type.Id)
-            {
-                db.Entry(type).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-            else BadRequest();
+            TemplateType type = db.TemplateType.Find(id);
+            if (type == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            type.Name = name;
+            db.Entry(type).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
         }
 
         [HttpDelete]

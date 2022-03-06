@@ -3,7 +3,7 @@ using Documents_backend.Models;
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Linq;
-
+using System.Net;
 
 namespace Documents_backend.Controllers
 {
@@ -15,13 +15,18 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public IEnumerable<UserDTO> Get()
         {
-            return db.User.OfType<UserDTO>();
+            var users = db.User;
+            if (users == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
         [HttpGet]
         public User Get(int id)
         {
             User user = db.User.Find(id);
+            if (user == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
             return user;
         }
 
@@ -34,14 +39,10 @@ namespace Documents_backend.Controllers
 
 
         [HttpPut]
-        public void Put(int id, [FromBody] UserDTO user)
+        public void Put([FromBody] UserDTO user)
         {
-            if (id == user.Id)
-            {
-                db.Entry(mapper.Map<User>(user)).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-            else BadRequest();
+            db.Entry(mapper.Map<User>(user)).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
         }
 
         [HttpDelete]
