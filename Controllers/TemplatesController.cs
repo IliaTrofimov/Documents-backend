@@ -31,9 +31,9 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] int authorId)
+        public int Post([FromBody] int authorId)
         {
-            db.Template.Add(new Template() { AuthorId = authorId });
+            return db.Template.Add(new Template() { AuthorId = authorId }).Id;
         }
 
 

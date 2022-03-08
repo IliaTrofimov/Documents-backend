@@ -32,9 +32,9 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] string name)
+        public int Post([FromBody] string name)
         {
-            db.TemplateType.Add(new TemplateType() { Name = name });
+            return db.TemplateType.Add(new TemplateType() { Name = name }).Id;
         }
 
 

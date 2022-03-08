@@ -38,9 +38,9 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] int userId, [FromBody] int documentId, [FromBody] bool signed = false)
+        public void Post([FromBody] int userId, [FromBody] int documentId)
         {
-           db.Sign.Add(new Sign() { UserId = userId, DocumentId = documentId, Signed = signed});
+           db.Sign.Add(new Sign() { UserId = userId, DocumentId = documentId });
         }
 
 

@@ -32,9 +32,9 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] int templateId, [FromBody] int authorId)
+        public int Post([FromBody] int templateId, [FromBody] int authorId)
         {
-            db.Document.Add(new Document() { TemplateId = templateId, AuthorId = authorId });
+            return db.Document.Add(new Document() { TemplateId = templateId, AuthorId = authorId }).Id;
         }
 
 

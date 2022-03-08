@@ -2,7 +2,6 @@
 using Documents_backend.Models;
 using System.Collections.Generic;
 using System.Web.Http;
-using System.Linq;
 using System.Net;
 
 namespace Documents_backend.Controllers
@@ -22,6 +21,12 @@ namespace Documents_backend.Controllers
         }
 
         [HttpGet]
+        public UserDTO Whoami()
+        {
+            return mapper.Map<UserDTO>(db.User.Find(0));
+        }
+
+        [HttpGet]
         public User Get(int id)
         {
             User user = db.User.Find(id);
@@ -32,9 +37,14 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
-        public void Post([FromBody] UserDTO user)
+        public int Post([FromBody] UserDTO user)
         {
-            db.User.Add(new User() { Firstname = user.Firstname, Lastname = user.Lastname, Fathersname = user.Fathersname});
+            return db.User.Add(new User() 
+            { 
+                Firstname = user.Firstname, 
+                Lastname = user.Lastname, 
+                Fathersname = user.Fathersname
+            }).Id;
         }
 
 
