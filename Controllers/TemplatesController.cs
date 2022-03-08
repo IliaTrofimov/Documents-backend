@@ -33,6 +33,8 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] int authorId)
         {
+            if (authorId == -1 || db.User.Find(authorId) == null)
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
             return db.Template.Add(new Template() { AuthorId = authorId }).Id;
         }
 

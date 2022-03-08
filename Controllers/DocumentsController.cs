@@ -34,6 +34,8 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] int templateId, [FromBody] int authorId)
         {
+            if (authorId == -1 || db.User.Find(authorId) == null)
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
             return db.Document.Add(new Document() { TemplateId = templateId, AuthorId = authorId }).Id;
         }
 
