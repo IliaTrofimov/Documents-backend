@@ -4,9 +4,11 @@ using System.Web.Http;
 using System.Linq;
 using AutoMapper;
 using System.Net;
+using System.Web.Http.Cors;
 
 namespace Documents_backend.Controllers
 {
+    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
     public class SignsController : ApiController
     {
         DataContext db = new DataContext();
@@ -20,14 +22,14 @@ namespace Documents_backend.Controllers
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             if (documentId != null && userId != null)
             {
-                var sign = db.Sign.Find(documentId, userId);
+                var sign = db.Signs.Find(documentId, userId);
                 if (sign == null)
                     throw new HttpResponseException(HttpStatusCode.NotFound);
                 return mapper.Map<IEnumerable<SignDTO>>(new Sign[]{ sign });
             }
             else
             {
-                var signs = from sign in db.Sign
+                var signs = from sign in db.Signs
                             where userId != null && sign.UserId == userId || documentId != null && sign.DocumentId == documentId
                             select sign;
                 if (signs == null)
@@ -40,14 +42,14 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public void Post([FromBody] int userId, [FromBody] int documentId)
         {
-           db.Sign.Add(new Sign() { UserId = userId, DocumentId = documentId });
+           db.Signs.Add(new Sign() { UserId = userId, DocumentId = documentId });
         }
 
 
         [HttpPut]
         public void Put([FromBody] int userId, [FromBody] int documentId, [FromBody] bool signed = false)
         {
-            Sign sign = db.Sign.Find(documentId, userId);
+            Sign sign = db.Signs.Find(documentId, userId);
             if (sign == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
@@ -59,10 +61,10 @@ namespace Documents_backend.Controllers
         [HttpDelete]
         public void Delete([FromBody] int userId, [FromBody] int documentId)
         {
-            Sign sign = db.Sign.Find(documentId, userId);
+            Sign sign = db.Signs.Find(documentId, userId);
             if (sign != null)
             {
-                db.Sign.Remove(sign);
+                db.Signs.Remove(sign);
                 db.SaveChanges();
             }
         }

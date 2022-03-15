@@ -3,9 +3,13 @@ using Documents_backend.Models;
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Net;
+using System.Linq;
+using System.Web.Http.Cors;
+using Documents_backend.Utility.Helpers;
 
 namespace Documents_backend.Controllers
 {
+    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
     public class TemplatesController : ApiController
     {
         DataContext db = new DataContext();
@@ -14,18 +18,20 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public IEnumerable<TemplateDTO> Get()
         {
-            var templates = db.Template;
+            var templates = db.Templates;
             if (templates == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-            return mapper.Map<IEnumerable<TemplateDTO>>(templates);
+            return mapper.Map<IEnumerable<TemplateDTO>>(templates.ToList());
         }
 
         [HttpGet]
         public Template Get(int id)
         {
-            Template template = db.Template.Find(id);
+            Template template = db.Templates.Find(id);
             if (template == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            template.TemplateField = template.TemplateField.OrderBy(f => f, new TemplateFieldComparer()).ToList();
             return template;
         }
 
@@ -33,9 +39,9 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] int authorId)
         {
-            if (authorId == -1 || db.User.Find(authorId) == null)
+            if (authorId == -1 || db.Users.Find(authorId) == null)
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            return db.Template.Add(new Template() { AuthorId = authorId }).Id;
+            return db.Templates.Add(new Template() { AuthorId = authorId }).Id;
         }
 
 
@@ -49,10 +55,10 @@ namespace Documents_backend.Controllers
         [HttpDelete]
         public void Delete(int id)
         {
-            Template template = db.Template.Find(id);
+            Template template = db.Templates.Find(id);
             if (template != null)
             {
-                db.Template.Remove(template);
+                db.Templates.Remove(template);
                 db.SaveChanges();
             }   
         }

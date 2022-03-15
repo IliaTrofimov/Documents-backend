@@ -361,3 +361,24 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Migrations/202203141556040_initial.cs
+/Migrations/202203141556040_initial.resx
+/Migrations/202203141556040_initial.Designer.cs
+/Migrations/202203151524436_rem_DocumentTableCell.resx
+/Migrations/202203151524436_rem_DocumentTableCell.Designer.cs
+/Migrations/202203151524436_rem_DocumentTableCell.cs
+/Migrations/202203151422464_changed_tableId_2.resx
+/Migrations/202203151422464_changed_tableId_2.Designer.cs
+/Migrations/202203151422464_changed_tableId_2.cs
+/Migrations/202203151417401_changed_tableId.resx
+/Migrations/202203151417401_changed_tableId.Designer.cs
+/Migrations/202203151417401_changed_tableId.cs
+/Migrations/202203151408099_add_DocumentDataItemId.resx
+/Migrations/202203151408099_add_DocumentDataItemId.Designer.cs
+/Migrations/202203151408099_add_DocumentDataItemId.cs
+/Migrations/202203151359294_rem_DocumentTableCells.resx
+/Migrations/202203151359294_rem_DocumentTableCells.Designer.cs
+/Migrations/202203151359294_rem_DocumentTableCells.cs
+/Migrations/202203141621031_auto-fields.resx
+/Migrations/202203141621031_auto-fields.Designer.cs
+/Migrations/202203141621031_auto-fields.cs

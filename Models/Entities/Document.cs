@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("Document")]
+    [Table("Documents")]
     public partial class Document
     {      
         public Document()
         {
-            DocumentDataItem = new HashSet<DocumentDataItem>();
-            DocumentTableCell = new HashSet<DocumentTableCell>();
-            Sign = new HashSet<Sign>();
+            DocumentDataItems = new HashSet<DocumentDataItem>();
+            //DocumentTableCells = new HashSet<DocumentTableCell>();
+            Signs = new HashSet<Sign>();
+            UpdateDate = DateTime.Now;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -21,30 +23,35 @@ namespace Documents_backend.Models
         [StringLength(500)]
         public string Name { get; set; }
 
-        public int TemplateId { get; set; }
-
-        public int? AuthorId { get; set; }
-
-        [NotMapped]
-        public string AuthorName { get => User != null ? User.GetFIO() : "Неизвестно"; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue(0)]
         public int Type { get; set; }
 
         [Column(TypeName = "date")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue("getutcdate()")]
         public DateTime UpdateDate { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime? ExpireDate { get; set; }
 
+
+        public int TemplateId { get; set; }
         public virtual Template Template { get; set; }
 
+
+        [NotMapped]
+        public string AuthorName => Author != null ? Author.GetFIO() : "Неизвестно";
+        public int? AuthorId { get; set; }
+
         [Newtonsoft.Json.JsonIgnore]
-        public virtual User User { get; set; }
+        public virtual User Author { get; set; }
 
-        public virtual ICollection<DocumentDataItem> DocumentDataItem { get; set; }
 
-        public virtual ICollection<DocumentTableCell> DocumentTableCell { get; set; }
+        public virtual ICollection<DocumentDataItem> DocumentDataItems { get; set; }
 
-        public virtual ICollection<Sign> Sign { get; set; }
+        //public virtual ICollection<DocumentTableCell> DocumentTableCells { get; set; }
+
+        public virtual ICollection<Sign> Signs { get; set; }
     }
 }

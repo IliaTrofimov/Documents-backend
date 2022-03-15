@@ -3,10 +3,11 @@ using Documents_backend.Models;
 using System.Collections.Generic;
 using System.Net;
 using System.Web.Http;
-
+using System.Web.Http.Cors;
 
 namespace Documents_backend.Controllers
 {
+    [EnableCors("http://localhost:4200", "*", "*")]
     public class TemplateTypesController : ApiController
     {
         DataContext db = new DataContext();
@@ -15,7 +16,7 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public IEnumerable<TemplateTypeDTO> Get()
         {
-            var types = db.TemplateType;
+            var types = db.TemplateTypes;
             if (types == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
             return mapper.Map<IEnumerable<TemplateTypeDTO>>(types);
@@ -24,7 +25,7 @@ namespace Documents_backend.Controllers
         [HttpGet]
         public TemplateType Get(int id)
         {
-            TemplateType type = db.TemplateType.Find(id);
+            TemplateType type = db.TemplateTypes.Find(id);
             if (type == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             return type;
@@ -34,14 +35,14 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] string name)
         {
-            return db.TemplateType.Add(new TemplateType() { Name = name }).Id;
+            return db.TemplateTypes.Add(new TemplateType() { Name = name }).Id;
         }
 
 
         [HttpPut]
         public void Put([FromBody] int id, [FromBody] string name)
         {
-            TemplateType type = db.TemplateType.Find(id);
+            TemplateType type = db.TemplateTypes.Find(id);
             if (type == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
@@ -53,10 +54,10 @@ namespace Documents_backend.Controllers
         [HttpDelete]
         public void Delete(int id)
         {
-            TemplateType type = db.TemplateType.Find(id);
+            TemplateType type = db.TemplateTypes.Find(id);
             if (type != null)
             {
-                db.TemplateType.Remove(type);
+                db.TemplateTypes.Remove(type);
                 db.SaveChanges();
             }
         }

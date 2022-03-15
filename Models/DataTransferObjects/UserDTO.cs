@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Documents_backend.Models
 {
     public partial class UserDTO
@@ -11,5 +9,9 @@ namespace Documents_backend.Models
         public string Lastname { get; set; }
 
         public string Fathersname { get; set; }
+
+        public byte Permissions { get; set; }
+
+        public string PermissionsString { get; set; }
     }
 }

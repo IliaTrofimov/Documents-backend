@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Documents_backend")]
+[assembly: AssemblyProduct("Documents backend")]
 [assembly: AssemblyCopyright("© , 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

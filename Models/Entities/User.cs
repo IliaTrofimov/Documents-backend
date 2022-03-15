@@ -1,17 +1,20 @@
+using Documents_backend.Models.Administrative;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("User")]
+    [Table("Users")]
     public partial class User
     {
         public User()
         {
-            Document = new HashSet<Document>();
-            Sign = new HashSet<Sign>();
-            Template = new HashSet<Template>();
+            Documents = new HashSet<Document>();
+            Signs = new HashSet<Sign>();
+            Templates = new HashSet<Template>();
+            Permissions = (byte)PermissionFlag.FullAccess;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -26,20 +29,21 @@ namespace Documents_backend.Models
         [StringLength(100)]
         public string Fathersname { get; set; }
 
-        //[Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<Document> Document { get; set; }
+        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue((byte)PermissionFlag.FullAccess)]
+        public byte Permissions { get; set; }
 
-        //[Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<Sign> Sign { get; set; }
+        public virtual ICollection<Document> Documents { get; set; }
 
-        //[Newtonsoft.Json.JsonIgnore]   
-        public virtual ICollection<Template> Template { get; set; }
+        public virtual ICollection<Sign> Signs { get; set; }
+
+        public virtual ICollection<Template> Templates { get; set; }
 
 
         public string GetFIO()
         {
-            if (Fathersname != null) return $"{Lastname} {Firstname[0]}. {Firstname[0]}.";
-            else return $"{Lastname} {Firstname[0]}.";
+            return Fathersname != null ? $"{Lastname} {Firstname[0]}. {Firstname[0]}." : $"{Lastname} {Firstname[0]}.";
         }
     }
 }

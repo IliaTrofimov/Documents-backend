@@ -3,23 +3,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("DocumentDataItem")]
     public partial class DocumentDataItem
     {
         [Key]
-        [Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Newtonsoft.Json.JsonIgnore]
-        public int DocumentId { get; set; }
-
+        public int Id { get; set; }
         public string Value { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Index("IX_ItemPlacement", 1, IsUnique = true)]
         public int Field { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
+        [Index("IX_ItemPlacement", 2, IsUnique = true)]
         public virtual Document Document { get; set; }
+
+        [Index("IX_ItemPlacement", 3, IsUnique = true)]
+        public int? Row { get; set; }
+
+        [Index("IX_ItemPlacement", 4, IsUnique = true)]
+        public int? Col { get; set; }
     }
+
+
 }

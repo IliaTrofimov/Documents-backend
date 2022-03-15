@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Documents_backend.Models
 {
@@ -12,8 +11,6 @@ namespace Documents_backend.Models
         public DateTime? UpdateDate { get; set; }
 
         public bool Depricated { get; set; }
-
-        public ICollection<Document> Document { get => null; }
 
         public string TemplateType { get; set; }
 

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("TemplateType")]
+    [Table("TemplateTypes")]
     public partial class TemplateType
     {
         public TemplateType()

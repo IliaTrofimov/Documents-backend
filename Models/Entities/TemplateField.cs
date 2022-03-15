@@ -1,38 +1,43 @@
+using Newtonsoft.Json;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("TemplateField")]
+    [Table("TemplateFields")]
     public partial class TemplateField
     {
-        [StringLength(300)]
-        public string Name { get; set; }
-
         [Key]
-        [Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
         public int Order { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Newtonsoft.Json.JsonIgnore]
+        [StringLength(500)]
+        public string Name { get; set; }
+
         public int TemplateId { get; set; }
-
-        public string Restriction { get; set; }
-
-        public int RestrictionType { get; set; }
-
-        public bool Required { get; set; }
-
-        public int DataType { get; set; }
-
-        public int? Row { get; set; }
-
-        public int? Col { get; set; }
-
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public virtual Template Template { get; set; }
+
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue("")]
+        public string Restriction { get; set; } = string.Empty;
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue(0)]
+        public int RestrictionType { get; set; } = 0;
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue(0)]
+        public bool Required { get; set; } = false;
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [DefaultValue(0)]
+        public int DataType { get; set; } = 0;
+
+        public int? TemplateTableId { get; set; }
+        [JsonIgnore]
+        public virtual TemplateTable TemplateTable { get; set; }
     }
 }
