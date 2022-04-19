@@ -3,6 +3,7 @@ using Documents_backend.Handlers;
 using Documents_backend.Models;
 using Documents_backend.Models.Administrative;
 using System.Data.Entity;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 
@@ -39,11 +40,28 @@ namespace Documents_backend
 
 
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Migrations.Configuration>());
-
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new MessageLoggingHandler());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+        }
+
+        void Application_BeginRequest(object sender, System.EventArgs e)
+        {
+            var context = HttpContext.Current;
+            var response = context.Response;
+
+           
+
+            if (context.Request.HttpMethod == "OPTIONS")
+            {
+                response.AddHeader("Access-Control-Allow-Origin", "*");
+                response.AddHeader("X-Frame-Options", "ALLOW-FROM *");
+                response.AddHeader("Access-Control-Allow-Credentials", "true");
+                response.AddHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+                response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+                response.AddHeader("Access-Control-Max-Age", "1728000");
+                response.End();
+            }
         }
     }
 }

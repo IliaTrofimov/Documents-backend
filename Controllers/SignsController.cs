@@ -16,6 +16,7 @@ namespace Documents_backend.Controllers
 
 
         [HttpGet]
+        [ActionName("get")]
         public IEnumerable<SignDTO> Get(int? documentId = null, int? userId = null)
         {
             if (documentId == null && userId == null)
@@ -40,6 +41,7 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
+        [ActionName("post")]
         public void Post([FromBody] int userId, [FromBody] int documentId)
         {
            db.Signs.Add(new Sign() { UserId = userId, DocumentId = documentId });
@@ -47,6 +49,7 @@ namespace Documents_backend.Controllers
 
 
         [HttpPut]
+        [ActionName("put")]
         public void Put([FromBody] int userId, [FromBody] int documentId, [FromBody] bool signed = false)
         {
             Sign sign = db.Signs.Find(documentId, userId);
@@ -59,6 +62,7 @@ namespace Documents_backend.Controllers
         }
 
         [HttpDelete]
+        [ActionName("delete")]
         public void Delete([FromBody] int userId, [FromBody] int documentId)
         {
             Sign sign = db.Signs.Find(documentId, userId);

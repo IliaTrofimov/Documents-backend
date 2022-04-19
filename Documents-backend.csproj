@@ -181,35 +181,20 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203141621031_auto-fields.cs" />
-    <Compile Include="Migrations\202203141621031_auto-fields.designer.cs">
-      <DependentUpon>202203141621031_auto-fields.cs</DependentUpon>
+    <Compile Include="Migrations\202204171042440_initial.cs" />
+    <Compile Include="Migrations\202204171042440_initial.designer.cs">
+      <DependentUpon>202204171042440_initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203151359294_rem_DocumentTableCells.cs" />
-    <Compile Include="Migrations\202203151359294_rem_DocumentTableCells.designer.cs">
-      <DependentUpon>202203151359294_rem_DocumentTableCells.cs</DependentUpon>
+    <Compile Include="Migrations\202204171044590_initial1.cs" />
+    <Compile Include="Migrations\202204171044590_initial1.designer.cs">
+      <DependentUpon>202204171044590_initial1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203151408099_add_DocumentDataItemId.cs" />
-    <Compile Include="Migrations\202203151408099_add_DocumentDataItemId.designer.cs">
-      <DependentUpon>202203151408099_add_DocumentDataItemId.cs</DependentUpon>
+    <Compile Include="Migrations\202204171110017_initial2.cs" />
+    <Compile Include="Migrations\202204171110017_initial2.designer.cs">
+      <DependentUpon>202204171110017_initial2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202203151417401_changed_tableId.cs" />
-    <Compile Include="Migrations\202203151417401_changed_tableId.designer.cs">
-      <DependentUpon>202203151417401_changed_tableId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202203151422464_changed_tableId_2.cs" />
-    <Compile Include="Migrations\202203151422464_changed_tableId_2.designer.cs">
-      <DependentUpon>202203151422464_changed_tableId_2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202203151524436_rem_DocumentTableCell.cs" />
-    <Compile Include="Migrations\202203151524436_rem_DocumentTableCell.designer.cs">
-      <DependentUpon>202203151524436_rem_DocumentTableCell.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Entities\TemplateItem.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
-    <Compile Include="Migrations\202203141556040_initial.cs" />
-    <Compile Include="Migrations\202203141556040_initial.designer.cs">
-      <DependentUpon>202203141556040_initial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\DataTransferObjects\DocumentDTO.cs" />
@@ -234,9 +219,9 @@
     <Compile Include="Utility\Helpers\TemplateFieldComparer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Database.mdf" />
-    <Content Include="App_Data\Database_log.ldf">
-      <DependentUpon>Database.mdf</DependentUpon>
+    <Content Include="App_Data\Data.mdf" />
+    <Content Include="App_Data\Data_log.ldf">
+      <DependentUpon>Data.mdf</DependentUpon>
     </Content>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -255,26 +240,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202203141556040_initial.resx">
-      <DependentUpon>202203141556040_initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204171042440_initial.resx">
+      <DependentUpon>202204171042440_initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203141621031_auto-fields.resx">
-      <DependentUpon>202203141621031_auto-fields.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204171044590_initial1.resx">
+      <DependentUpon>202204171044590_initial1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203151359294_rem_DocumentTableCells.resx">
-      <DependentUpon>202203151359294_rem_DocumentTableCells.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203151408099_add_DocumentDataItemId.resx">
-      <DependentUpon>202203151408099_add_DocumentDataItemId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203151417401_changed_tableId.resx">
-      <DependentUpon>202203151417401_changed_tableId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203151422464_changed_tableId_2.resx">
-      <DependentUpon>202203151422464_changed_tableId_2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202203151524436_rem_DocumentTableCell.resx">
-      <DependentUpon>202203151524436_rem_DocumentTableCell.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204171110017_initial2.resx">
+      <DependentUpon>202204171110017_initial2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

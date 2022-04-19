@@ -14,6 +14,17 @@ namespace Documents_backend.Controllers
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
         [HttpGet]
+        [ActionName("whoami")]
+        public UserDTO WhoAmI()
+        {
+            var users = db.Users.Find(0);
+            if (users == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return mapper.Map<UserDTO>(users);
+        }
+
+        [HttpGet]
+        [ActionName("list")]
         public IEnumerable<UserDTO> Get()
         {
             var users = db.Users;
@@ -23,6 +34,7 @@ namespace Documents_backend.Controllers
         }
 
         [HttpGet]
+        [ActionName("get")]
         public UserDTORich Get(int id)
         {
             User user = db.Users.Find(id);
@@ -33,6 +45,7 @@ namespace Documents_backend.Controllers
 
 
         [HttpPost]
+        [ActionName("post")]
         public int Post([FromBody] UserDTO user)
         {
             return db.Users.Add(new User() 
@@ -45,6 +58,7 @@ namespace Documents_backend.Controllers
 
 
         [HttpPut]
+        [ActionName("put")]
         public void Put([FromBody] UserDTO user)
         {
             db.Entry(mapper.Map<User>(user)).State = System.Data.Entity.EntityState.Modified;
@@ -52,6 +66,7 @@ namespace Documents_backend.Controllers
         }
 
         [HttpDelete]
+        [ActionName("delete")]
         public void Delete(int id)
         {
             User user = db.Users.Find(id);

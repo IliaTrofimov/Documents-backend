@@ -1,28 +1,20 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents_backend.Models
 {
-    [Table("TemplateTables")]
-    public partial class TemplateTable
+    public partial class TemplateTable : TemplateItem
     {
         public TemplateTable()
         {
-            TemplateField = new HashSet<TemplateField>();
+            TemplateFields = new HashSet<TemplateField>();
         }
 
-        [Key]
-        public int Id { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DefaultValue(1)]
-        public int Rows { get; set; } = 1;
-        public string Name { get; set; }
+        public int Rows { get; set; }
 
-        [JsonIgnore]
-        public virtual ICollection<TemplateField> TemplateField { get; set; }
+        public virtual ICollection<TemplateField> TemplateFields { get; set; }
     }
 }

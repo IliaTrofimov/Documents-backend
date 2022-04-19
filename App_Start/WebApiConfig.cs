@@ -8,9 +8,7 @@ namespace Documents_backend
     {
         public static void Register(HttpConfiguration config)
         {
-
-            var corsAttr = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(corsAttr);
+            config.EnableCors();
 
             config.MapHttpAttributeRoutes();
             
@@ -21,9 +19,14 @@ namespace Documents_backend
                 config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml"));
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                name: "id-action",
+                routeTemplate: "api/{controller}/{id}/{action}",
+                defaults: new { id = RouteParameter.Optional, action = "list" }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "id-action-id",
+                routeTemplate: "api/{controller}/{id}/{action}/{childId}"
             );
         }
     }

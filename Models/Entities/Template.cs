@@ -12,31 +12,29 @@ namespace Documents_backend.Models
         public Template()
         {
             Document = new HashSet<Document>();
-            TemplateField = new HashSet<TemplateField>();
-            TemplateTable = new HashSet<TemplateTable>();
+            TemplateItems = new HashSet<TemplateItem>();
             UpdateDate = DateTime.Now;
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [StringLength(300)]
         public string Name { get; set; }
 
 
-
         [Column(TypeName = "date")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DefaultValue("getutcdate()")]
         public DateTime? UpdateDate { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DefaultValue(0)]
         public bool Depricated { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual ICollection<Document> Document { get; set; }
 
+        public virtual int? TemplateTypeId { get; set; }
         public virtual TemplateType TemplateType { get; set; }
 
 
@@ -47,7 +45,6 @@ namespace Documents_backend.Models
         public virtual User Author { get; set; }
 
 
-        public virtual ICollection<TemplateField> TemplateField { get; set; }
-        public virtual ICollection<TemplateTable> TemplateTable { get; set; }
+        public virtual ICollection<TemplateItem> TemplateItems { get; set; }
     }
 }

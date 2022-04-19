@@ -12,7 +12,6 @@ namespace Documents_backend.Models
         public Document()
         {
             DocumentDataItems = new HashSet<DocumentDataItem>();
-            //DocumentTableCells = new HashSet<DocumentTableCell>();
             Signs = new HashSet<Sign>();
             UpdateDate = DateTime.Now;
         }
@@ -49,8 +48,6 @@ namespace Documents_backend.Models
 
 
         public virtual ICollection<DocumentDataItem> DocumentDataItems { get; set; }
-
-        //public virtual ICollection<DocumentTableCell> DocumentTableCells { get; set; }
 
         public virtual ICollection<Sign> Signs { get; set; }
     }

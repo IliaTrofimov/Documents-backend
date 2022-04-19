@@ -17,7 +17,8 @@ namespace Documents_backend.Models
             Permissions = (byte)PermissionFlag.FullAccess;
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [StringLength(100)]

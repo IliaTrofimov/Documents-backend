@@ -7,13 +7,14 @@ using System.Web.Http.Cors;
 
 namespace Documents_backend.Controllers
 {
-    [EnableCors("http://localhost:4200", "*", "*")]
+    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class TemplateTypesController : ApiController
     {
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
         [HttpGet]
+        [ActionName("list")]
         public IEnumerable<TemplateTypeDTO> Get()
         {
             var types = db.TemplateTypes;
@@ -23,6 +24,7 @@ namespace Documents_backend.Controllers
         }
 
         [HttpGet]
+        [ActionName("get")]
         public TemplateType Get(int id)
         {
             TemplateType type = db.TemplateTypes.Find(id);
