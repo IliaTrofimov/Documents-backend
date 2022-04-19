@@ -10,7 +10,7 @@ using System.Net.Http;
 
 namespace Documents_backend.Controllers
 {
-    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class DocumentsController : ApiController
     {
         DataContext db = new DataContext();
