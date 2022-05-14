@@ -31,9 +31,11 @@ namespace Documents_backend.Models
         public string Fathersname { get; set; }
 
         [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [DefaultValue((byte)PermissionFlag.FullAccess)]
         public byte Permissions { get; set; }
+
+        public int? PositionId { get; set; }
+        public Position Position { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; }
 
@@ -46,5 +48,12 @@ namespace Documents_backend.Models
         {
             return Fathersname != null ? $"{Lastname} {Firstname[0]}. {Firstname[0]}." : $"{Lastname} {Firstname[0]}.";
         }
+
+
+        public static User CreateAdmin(string firstname, string lastname, string fathersname) =>
+            new User() { Firstname = firstname, Lastname = lastname, Fathersname = firstname, Permissions = (byte)PermissionFlag.FullAccess };
+
+        public static User CreateAdmin() =>
+            new User() { Firstname = "Admin", Lastname = "Admin", Fathersname = "Admin", Permissions = (byte)PermissionFlag.FullAccess };
     }
 }

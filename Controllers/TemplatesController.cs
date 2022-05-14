@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
-using Documents_backend.Models;
-using System.Collections.Generic;
-using System.Web.Http;
 using System.Net;
 using System.Linq;
+using System.Web.Http;
 using System.Web.Http.Cors;
-using Documents_backend.Utility.Helpers;
+using System.Collections.Generic;
+
+using Documents_backend.Utility;
+using Documents_backend.Models;
+
+
 
 namespace Documents_backend.Controllers
 {
@@ -14,6 +17,85 @@ namespace Documents_backend.Controllers
     {
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
+
+
+        private void _UpdateItem(Template template, TemplateField field)
+        {
+            field.TemplateId = template.Id;
+            if (field.Id == -1)
+            {
+                if (db.Documents.FirstOrDefault(d => d.TemplateId == template.Id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
+
+                if (template.TemplateItems.Count == 0)
+                    field.Order = 0;
+                else if (field.TemplateTable != null)
+                    field.Order = template.TemplateItems
+                           .Where(item => item is TemplateField tf && tf.TemplateTableId == field.TemplateTableId)
+                           .Max(item => item.Order) + 1;
+                else
+                    field.Order = template.TemplateItems
+                              .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == field.TemplateTableId)
+                              .Max(item => item.Order) + 1;
+
+                db.TemplateFields.Add(field);
+            }        
+            else
+            {
+                var found = db.TemplateFields.Find(field.Id);       
+
+                found.Order = field.Order;
+                found.Name = field.Name;
+                found.DataType = field.DataType;
+                found.Required = field.Required;
+                found.Restriction = field.Restriction;
+                if (field.TemplateTableId != null && db.TemplateTables.Find(field.TemplateTableId) == null)
+                    throw new HttpResponseException(HttpStatusCode.BadRequest);
+                found.TemplateTableId = field.TemplateTableId;
+            }
+        }
+
+        private void _UpdateItem(Template template, TemplateTable table)
+        {
+            table.TemplateId = template.Id;
+            if (table.Id == -1)
+            {
+                if (db.Documents.FirstOrDefault(d => d.TemplateId == template.Id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
+                
+                if (template.TemplateItems.Count == 0)
+                    table.Order = 0;
+                else 
+                    table.Order = template.TemplateItems
+                           .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
+                           .Max(item => item.Order) + 1;
+                db.TemplateTables.Add(table);  
+            }
+            else
+            {
+                var found = db.TemplateTables.Find(table.Id);
+                found.Order = table.Order;
+                found.Name = table.Name;
+                found.Rows = table.Rows;
+            }
+        }
+
+        private void _ResetOrder(Template template, TemplateItem item)
+        {
+            int? itemTableId = (item is TemplateField) ? (int?)item.TemplateId : null;
+
+            foreach (TemplateItem i in template.TemplateItems)
+            {
+                if (i.Order > item.Order)
+                {
+                    if (i is TemplateField)
+                        i.Order--;
+                    else if (i is TemplateField f && f.TemplateTableId == itemTableId)
+                        i.Order--;
+                }
+            }
+        }
+
 
         [HttpGet]
         [ActionName("list")]
@@ -33,20 +115,17 @@ namespace Documents_backend.Controllers
             if (template == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            template.TemplateItems = template.TemplateItems
-                .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
-                .OrderBy(item => item.Order).ToList();
-            return template;
+            return template.SortTemplateItems();
         }
 
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] int authorId)
+        public int Post()
         {
-            if (authorId == -1 || db.Users.Find(authorId) == null)
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            return db.Templates.Add(new Template() { AuthorId = authorId, UpdateDate = System.DateTime.Now }).Id;
+            Template template = db.Templates.Add(new Template() { UpdateDate = System.DateTime.Now });
+            db.SaveChanges();
+            return template.Id;
         }
 
 
@@ -54,24 +133,19 @@ namespace Documents_backend.Controllers
         [ActionName("put")]
         public Template Put(int id, [FromBody] Template template)
         {
-            template.UpdateDate = System.DateTime.Now;
-            db.Entry(template).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
+            Template found = db.Templates.Find(id);
+            if (template == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
+            if (db.TemplateTypes.Find(template.TemplateTypeId) == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template type not found");
 
-            foreach (var item in template.TemplateItems)
-            {
-                if (item is TemplateField field)
-                    _UpdateField(template, field);
-                else if (item is TemplateTable table)
-                {
-                    _UpdateTable(template, table);
-                    foreach (var col in table.TemplateFields)
-                        _UpdateField(template, col);
-                }
-                db.SaveChanges();
-            }
+            found.UpdateDate = System.DateTime.Now;
+            found.Depricated = template.Depricated;
+            found.Name = template.Name;
+            found.TemplateTypeId = template.TemplateTypeId;
 
-            return template;
+            db.SaveChanges();      
+            return found.SortTemplateItems();
         }
 
         [HttpPut]
@@ -80,11 +154,11 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             if (template == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, table you trying change not found");
 
-            _UpdateTable(template, table);
+            _UpdateItem(template, table);
             db.SaveChanges();
-            return template;
+            return template.SortTemplateItems();
         }
 
         [HttpPut]
@@ -93,11 +167,11 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             if (template == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, field you trying change not found");
 
-            _UpdateField(template, field);
+            _UpdateItem(template, field);
             db.SaveChanges();
-            return template;
+            return template.SortTemplateItems();
         }
 
 
@@ -108,14 +182,15 @@ namespace Documents_backend.Controllers
             Template template = db.Templates.Find(id);
             if (template != null)
             {
-                if (db.Documents.First(d => d.TemplateId == id) != null)
-                    throw new HttpResponseException(HttpStatusCode.Conflict);
-
+                if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template, some assets are still using it");
+                db.TemplateFields.RemoveRange(db.TemplateFields.Where(f => f.TemplateId == id));
+                db.SaveChanges();
                 db.Templates.Remove(template);
                 db.SaveChanges();
                 Ok();
             }
-            else NotFound();
+            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete template, template not found");
         }
 
         [HttpDelete]
@@ -124,13 +199,19 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             TemplateField item = db.TemplateFields.Find(childId);
+
             if (template != null && item != null)
             {
+                if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
+
                 db.TemplateFields.Remove(item);
+                _ResetOrder(template, item);
                 db.SaveChanges();
                 Ok();
             }
-            else NotFound();
+            else 
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, field you trying delete is not found");
         }
 
         [HttpDelete]
@@ -139,14 +220,21 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             TemplateTable item = db.TemplateTables.Find(childId);
+
             if (template != null && item != null)
             {
+                if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
+
                 db.TemplateFields.RemoveRange(db.TemplateFields.Where(x => x.TemplateTableId == item.Id));
                 db.TemplateTables.Remove(item);
+                _ResetOrder(template, item);
+
                 db.SaveChanges();
                 Ok();
             }
-            else NotFound();
+            else
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, table you trying delete is not found");
         }
 
 
@@ -157,37 +245,6 @@ namespace Documents_backend.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-
-        private void _UpdateField(Template template, TemplateField field)
-        {
-            field.TemplateId = template.Id;
-            if (field.Id == -1)
-                db.TemplateFields.Add(field);
-            else
-            {
-                var found = db.TemplateFields.Find(field.Id);
-                found.Order = field.Order;
-                found.Name = field.Name;
-                found.DataType = field.DataType;
-                found.Required = field.Required;
-                found.Restriction = field.Restriction;
-            }
-        }
-
-        private void _UpdateTable(Template template, TemplateTable table)
-        {
-            table.TemplateId = template.Id;
-            if (table.Id == -1)
-                db.TemplateTables.Add(table);
-            else
-            {
-                var found = db.TemplateTables.Find(table.Id);
-                found.Order = table.Order;
-                found.Name = table.Name;
-                found.Rows = table.Rows;
-            }
         }
     }
 }

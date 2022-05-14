@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
-using Documents_backend.Models;
-using System.Collections.Generic;
-using System.Web.Http;
 using System.Net;
+using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Collections.Generic;
+using System.Data.Entity;
+
+using Documents_backend.Utility;
+using Documents_backend.Models;
+using System.Linq;
 
 namespace Documents_backend.Controllers
 {
@@ -17,19 +21,23 @@ namespace Documents_backend.Controllers
         [ActionName("whoami")]
         public UserDTO WhoAmI()
         {
-            var users = db.Users.Find(0);
-            if (users == null)
-                throw new HttpResponseException(HttpStatusCode.NoContent);
-            return mapper.Map<UserDTO>(users);
+            var user = db.Users.Find(0);
+            if (user == null)
+            {
+                user = db.Users.Add(Models.User.CreateAdmin());
+                db.SaveChanges();
+            }
+            return mapper.Map<UserDTO>(user);
         }
 
         [HttpGet]
         [ActionName("list")]
         public IEnumerable<UserDTO> Get()
         {
-            var users = db.Users;
+            var users = db.Users.Include(user => user.Position);
             if (users == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
+      
             return mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
@@ -37,9 +45,10 @@ namespace Documents_backend.Controllers
         [ActionName("get")]
         public UserDTORich Get(int id)
         {
-            User user = db.Users.Find(id);
+            User user = db.Users.Include(_user => _user.Position).FirstOrDefault(_user => _user.Id == id);
             if (user == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            
             return mapper.Map<UserDTORich>(user);
         }
 
@@ -48,22 +57,37 @@ namespace Documents_backend.Controllers
         [ActionName("post")]
         public int Post([FromBody] UserDTO user)
         {
-            return db.Users.Add(new User() 
+            User newUser = db.Users.Add(new User() 
             { 
                 Firstname = user.Firstname, 
                 Lastname = user.Lastname, 
-                Fathersname = user.Fathersname
-            }).Id;
+                Fathersname = user.Fathersname,
+                PositionId = user.PositionId,
+                Permissions = user.Permissions
+            });
+            db.SaveChanges();
+            return newUser.Id;
         }
 
 
         [HttpPut]
         [ActionName("put")]
-        public void Put([FromBody] UserDTO user)
+        public UserDTO Put(int id, [FromBody] UserDTO user)
         {
-            db.Entry(mapper.Map<User>(user)).State = System.Data.Entity.EntityState.Modified;
+            User found = db.Users.Find(id); 
+            if (found == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update user, user not found");
+
+            found.Fathersname = user.Fathersname;
+            found.Firstname = user.Firstname;
+            found.Lastname = user.Lastname;
+            found.Permissions = user.Permissions;
+            found.PositionId = user.PositionId;
+
             db.SaveChanges();
+            return mapper.Map<UserDTO>(found);
         }
+
 
         [HttpDelete]
         [ActionName("delete")]
@@ -75,6 +99,8 @@ namespace Documents_backend.Controllers
                 db.Users.Remove(user);
                 db.SaveChanges();
             }   
+            else
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete user, user not found");
         }
 
         protected override void Dispose(bool disposing)

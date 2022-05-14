@@ -18,5 +18,8 @@ namespace Documents_backend.Models
         public int TemplateId { get; set; }
         [JsonIgnore]
         public virtual Template Template { get; set; }
+
+        public abstract bool IsTable { get; }
+
     }
 }

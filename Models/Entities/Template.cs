@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Documents_backend.Models
 {
@@ -46,5 +47,18 @@ namespace Documents_backend.Models
 
 
         public virtual ICollection<TemplateItem> TemplateItems { get; set; }
+
+
+        public Template SortTemplateItems()
+        {
+            if (TemplateItems.Count != 0)
+            {
+                TemplateItems = TemplateItems
+                   .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
+                   .OrderBy(item => item.Order)
+                   .ToList();
+            }
+            return this;
+        }
     }
 }

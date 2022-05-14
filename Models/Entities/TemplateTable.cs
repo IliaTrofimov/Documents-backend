@@ -16,5 +16,7 @@ namespace Documents_backend.Models
         public int Rows { get; set; }
 
         public virtual ICollection<TemplateField> TemplateFields { get; set; }
+
+        public override bool IsTable => true;
     }
 }

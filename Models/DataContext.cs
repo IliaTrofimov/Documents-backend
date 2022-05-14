@@ -16,6 +16,8 @@ namespace Documents_backend.Models
         public virtual DbSet<TemplateTable> TemplateTables { get; set; }
         public virtual DbSet<TemplateType> TemplateTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Position> Positions { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -23,8 +25,12 @@ namespace Documents_backend.Models
                 "SqlDefaultValue", (p, attributes) => attributes.SingleOrDefault().Value.ToString()
             );
             modelBuilder.Conventions.Add(convention);
-        }
 
-        
+            modelBuilder.Entity<TemplateItem>()
+                .Map<TemplateField>(m => m.Requires("IsTable").HasValue(false))
+                .Map<TemplateTable>(m => m.Requires("IsTable").HasValue(true));
+
+            
+        }
     }
 }

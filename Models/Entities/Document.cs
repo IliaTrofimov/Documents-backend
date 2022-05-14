@@ -16,7 +16,8 @@ namespace Documents_backend.Models
             UpdateDate = DateTime.Now;
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [StringLength(500)]

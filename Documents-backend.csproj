@@ -172,8 +172,8 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PositionsController.cs" />
     <Compile Include="Controllers\SignsController.cs" />
-    <Compile Include="Controllers\WhoAmIController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\TemplateTypesController.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />
@@ -181,19 +181,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202204171042440_initial.cs" />
-    <Compile Include="Migrations\202204171042440_initial.designer.cs">
-      <DependentUpon>202204171042440_initial.cs</DependentUpon>
+    <Compile Include="Migrations\202205031546054_user-groups.cs" />
+    <Compile Include="Migrations\202205031546054_user-groups.designer.cs">
+      <DependentUpon>202205031546054_user-groups.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202204171044590_initial1.cs" />
-    <Compile Include="Migrations\202204171044590_initial1.designer.cs">
-      <DependentUpon>202204171044590_initial1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202204171110017_initial2.cs" />
-    <Compile Include="Migrations\202204171110017_initial2.designer.cs">
-      <DependentUpon>202204171110017_initial2.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
+    <Compile Include="Models\POST\DocumentPOST.cs" />
+    <Compile Include="Models\POST\SignPOST.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
@@ -215,10 +210,10 @@
     <Compile Include="Models\Entities\User.cs" />
     <Compile Include="Models\Administrative\UserPermission.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\Helpers\DocumentDataItemComparer.cs" />
-    <Compile Include="Utility\Helpers\TemplateFieldComparer.cs" />
+    <Compile Include="Utility\HttpHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="App_Data\Data.mdf" />
     <Content Include="App_Data\Data_log.ldf">
       <DependentUpon>Data.mdf</DependentUpon>
@@ -240,14 +235,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202204171042440_initial.resx">
-      <DependentUpon>202204171042440_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204171044590_initial1.resx">
-      <DependentUpon>202204171044590_initial1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202204171110017_initial2.resx">
-      <DependentUpon>202204171110017_initial2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202205031546054_user-groups.resx">
+      <DependentUpon>202205031546054_user-groups.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

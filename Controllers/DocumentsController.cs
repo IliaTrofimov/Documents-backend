@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using Documents_backend.Models;
-using System.Collections.Generic;
 using System.Net;
-using System.Web.Http;
 using System.Linq;
+using System.Web.Http;
 using System.Web.Http.Cors;
-using System.Net.Http;
+using System.Collections.Generic;
+
+using Documents_backend.Utility;
+using Documents_backend.Models;
 
 
 namespace Documents_backend.Controllers
@@ -15,6 +16,7 @@ namespace Documents_backend.Controllers
     {
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
+
 
         [HttpGet]
         [ActionName("list")]
@@ -34,39 +36,40 @@ namespace Documents_backend.Controllers
             if (document == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            document.DocumentDataItems = (from c in document.DocumentDataItems
-                                          orderby c.Field, c.Row, c.Col
-                                          select c).ToList();
-            document.Template.TemplateItems = document.Template.TemplateItems.OrderBy(f => f.Order).ToList();
+            document.Template = document.Template.SortTemplateItems();
             return document;
         }   
 
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] int templateId, [FromBody] int authorId)
+        public int Post([FromBody] Models.POST.DocumentPOST body)
         {
-            if (authorId == -1 || db.Users.Find(authorId) == null)
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-
-            Template template = db.Templates.Find(templateId);
+            Template template = db.Templates.Find(body.TemplateId);
             if (template == null)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot create document from template, template not found");
 
-            Document document = new Document() { TemplateId = templateId, AuthorId = authorId, UpdateDate = System.DateTime.Now };
+            Document document = new Document() { TemplateId = body.TemplateId, UpdateDate = System.DateTime.Now };
+            db.Documents.Add(document);
+            db.SaveChanges();
+
             foreach (var item in template.TemplateItems)
             {
                 if (item is TemplateField field)
-                    document.DocumentDataItems.Add(new DocumentDataItem() { Field = item.Id});               
+                    db.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.Id, Document = document });
                 else if (item is TemplateTable table)
                 {
                     foreach (var col in table.TemplateFields)
                         for (int i = 0; i < table.Rows; i++)
-                            document.DocumentDataItems.Add(new DocumentDataItem() { Field = item.Id, Col = col.Id, Row = i });
+                            db.DocumentDataItems.Add(new DocumentDataItem() 
+                            { 
+                                FieldId = col.Id, 
+                                Document = document, 
+                                Row = i 
+                            });
                 }
             }
 
-            db.Documents.Add(document);
             db.SaveChanges();
             return document.Id;
         }
@@ -75,16 +78,13 @@ namespace Documents_backend.Controllers
         [ActionName("from-existing")]
         public int FromExisting([FromBody] int documentId, [FromBody] int authorId)
         {
-            if (authorId == -1 || db.Users.Find(authorId) == null)
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-
             Document oldDocument = db.Documents.Find(documentId);
             if (oldDocument == null)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot create new version of document, previous document not found");
 
             Document document = new Document() { TemplateId = oldDocument.TemplateId, AuthorId = authorId, UpdateDate = System.DateTime.Now };
             foreach (var item in oldDocument.DocumentDataItems)
-                document.DocumentDataItems.Add(new DocumentDataItem() { Field = item.Id, Col = item.Col, Row = item.Row, Value = item.Value });
+                document.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.FieldId, Row = item.Row, Value = item.Value });
 
             db.Documents.Add(document);
             db.SaveChanges();
@@ -94,12 +94,24 @@ namespace Documents_backend.Controllers
 
         [HttpPut]
         [ActionName("put")]
-        public void Put([FromBody] Document document)
+        public Document Put([FromBody] Document document)
         {
             document.UpdateDate = System.DateTime.Now;
-            db.Entry(document).State = System.Data.Entity.EntityState.Modified;
+            Document found = db.Documents.Find(document.Id);
+            if (found == null)
+                this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot update document, document not found");
+
+            found.UpdateDate = System.DateTime.Now;
+            found.Name = document.Name;
+            found.ExpireDate = document.ExpireDate;
+            found.Type = document.Type;
             db.SaveChanges();
-            return;
+
+            document.Template.TemplateItems = document.Template.TemplateItems
+                .OrderBy(item => item.Order)
+                .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
+                .ToList();
+            return document;
         }
 
         [HttpPut]
@@ -108,7 +120,7 @@ namespace Documents_backend.Controllers
         {
             Document document = db.Documents.Find(id);
             if (document == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot update document, document not found");
 
             item.Document = document;
             if (item.Id == -1)
@@ -117,25 +129,31 @@ namespace Documents_backend.Controllers
             {
                 var found = db.DocumentDataItems.Find(item.Id);
                 found.Value = item.Value;
-                found.Col = item.Col;
                 found.Row = item.Row;
             }
             db.SaveChanges();
+
+            document.Template.TemplateItems = document.Template.TemplateItems
+                .OrderBy(i => i.Order)
+                .Where(i => !(i is TemplateField tf) || tf.TemplateTableId == null)
+                .ToList();
             return document;
         }
 
 
         [HttpDelete]
         [ActionName("delete")]
-        public HttpResponseMessage Delete(int id)
+        public void Delete(int id)
         {
             Document info = db.Documents.Find(id);
             if (info != null)
             {
                 db.Documents.Remove(info);
+                db.DocumentDataItems.RemoveRange(db.DocumentDataItems.Where(i => i.DocumentId == id));
                 db.SaveChanges();
+                Ok();
             }
-            return Request.CreateResponse(HttpStatusCode.Accepted);
+            else this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot delete document, document not found");
         }
 
         protected override void Dispose(bool disposing)

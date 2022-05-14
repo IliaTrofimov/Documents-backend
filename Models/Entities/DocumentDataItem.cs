@@ -10,19 +10,19 @@ namespace Documents_backend.Models
         public int Id { get; set; }
         public string Value { get; set; }
 
-        [Index("IX_ItemPlacement", 1, IsUnique = true)]
-        public int Field { get; set; }
+        [Required]
+        public int FieldId { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
-        [Index("IX_ItemPlacement", 2, IsUnique = true)]
+        [Required]
+        public TemplateField Field { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
         public virtual Document Document { get; set; }
 
-        [Index("IX_ItemPlacement", 3, IsUnique = true)]
+        [Newtonsoft.Json.JsonIgnore]
+        public int DocumentId { get; set; }
+
         public int? Row { get; set; }
-
-        [Index("IX_ItemPlacement", 4, IsUnique = true)]
-        public int? Col { get; set; }
     }
-
-
 }

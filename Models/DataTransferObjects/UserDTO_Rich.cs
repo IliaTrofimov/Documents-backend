@@ -21,12 +21,14 @@ namespace Documents_backend.Models
 
         public byte Permissions { get; set; }
 
-        public string PermissionsString { get; set; }
-
         public ICollection<DocumentDTO> Documents { get; set; }
 
         public ICollection<SignDTO> Signs { get; set; }
 
         public ICollection<TemplateDTO> Templates { get; set; }
+
+        public Position Position { get; set; }
+
+        public int PositionId { get; set; }
     }
 }

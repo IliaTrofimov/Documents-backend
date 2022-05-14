@@ -12,6 +12,7 @@ namespace Documents_backend.Models
 
         public byte Permissions { get; set; }
 
-        public string PermissionsString { get; set; }
+        public Position Position { get; set; }
+        public int? PositionId { get; set; }
     }
 }

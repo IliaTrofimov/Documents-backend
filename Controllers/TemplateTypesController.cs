@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
-using Documents_backend.Models;
-using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Collections.Generic;
+
+using Documents_backend.Utility;
+using Documents_backend.Models;
+
 
 namespace Documents_backend.Controllers
 {
@@ -12,6 +16,7 @@ namespace Documents_backend.Controllers
     {
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
+
 
         [HttpGet]
         [ActionName("list")]
@@ -37,19 +42,20 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] string name)
         {
-            return db.TemplateTypes.Add(new TemplateType() { Name = name }).Id;
+            TemplateType type = db.TemplateTypes.Add(new TemplateType() { Name = name });
+            db.SaveChanges();
+            return type.Id;
         }
 
 
         [HttpPut]
-        public void Put([FromBody] int id, [FromBody] string name)
+        public void Put(int id, [FromBody] TemplateType type)
         {
-            TemplateType type = db.TemplateTypes.Find(id);
+            TemplateType found = db.TemplateTypes.Find(id);
             if (type == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update template type, type not found");
 
-            type.Name = name;
-            db.Entry(type).State = System.Data.Entity.EntityState.Modified;
+            found.Name = type.Name;
             db.SaveChanges();
         }
 
@@ -59,9 +65,12 @@ namespace Documents_backend.Controllers
             TemplateType type = db.TemplateTypes.Find(id);
             if (type != null)
             {
+                if (db.Templates.FirstOrDefault(t => t.TemplateTypeId == id) != null)
+                    this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template type, some assests still use it");
                 db.TemplateTypes.Remove(type);
                 db.SaveChanges();
             }
+            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete template type, type not found");
         }
 
         protected override void Dispose(bool disposing)

@@ -6,6 +6,6 @@ namespace Documents_backend.Models
 
         public string Value { get; set; }
 
-        public int Field { get; set; }
+        public int FieldId { get; set; }
     }
 }

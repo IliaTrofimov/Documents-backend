@@ -23,5 +23,11 @@ namespace Documents_backend.Models
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual User User { get; set; }
+
+        public int SignerPositionId { get; set; }
+        public virtual Position SignerPosition { get; set; }
+
+        public System.DateTime UpdateDate { get; set; }
+        public System.DateTime CreateDate { get; set; }
     }
 }

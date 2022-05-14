@@ -19,6 +19,12 @@ namespace Documents_backend
                 config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml"));
 
             config.Routes.MapHttpRoute(
+               name: "action",
+               routeTemplate: "api/{controller}/{action}",
+               defaults: new { action = "list" }
+           );
+
+            config.Routes.MapHttpRoute(
                 name: "id-action",
                 routeTemplate: "api/{controller}/{id}/{action}",
                 defaults: new { id = RouteParameter.Optional, action = "list" }
