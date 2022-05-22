@@ -18,6 +18,7 @@ namespace Documents_backend.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
 
+        public virtual DbSet<TemplateTypePosition> TemplateTypePositions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -30,7 +31,15 @@ namespace Documents_backend.Models
                 .Map<TemplateField>(m => m.Requires("IsTable").HasValue(false))
                 .Map<TemplateTable>(m => m.Requires("IsTable").HasValue(true));
 
-            
+            modelBuilder.Entity<TemplateItem>()
+                .HasRequired(t => t.Template)
+                .WithMany()
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<DocumentDataItem>()
+                .HasRequired(i => i.Document)
+                .WithMany()
+                .WillCascadeOnDelete(true);
         }
     }
 }

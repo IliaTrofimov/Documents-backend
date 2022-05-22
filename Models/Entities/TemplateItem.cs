@@ -15,6 +15,7 @@ namespace Documents_backend.Models
         [StringLength(500)]
         public string Name { get; set; }
 
+        [Required]
         public int TemplateId { get; set; }
         [JsonIgnore]
         public virtual Template Template { get; set; }

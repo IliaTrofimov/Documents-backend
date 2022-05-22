@@ -7,8 +7,7 @@ using System.Collections.Generic;
 
 using Documents_backend.Utility;
 using Documents_backend.Models;
-
-
+using Documents_backend.Models.POST;
 
 namespace Documents_backend.Controllers
 {
@@ -39,10 +38,11 @@ namespace Documents_backend.Controllers
                               .Max(item => item.Order) + 1;
 
                 db.TemplateFields.Add(field);
-            }        
+                template.TemplateItems.Add(field);
+            }
             else
             {
-                var found = db.TemplateFields.Find(field.Id);       
+                var found = db.TemplateFields.Find(field.Id);
 
                 found.Order = field.Order;
                 found.Name = field.Name;
@@ -69,7 +69,8 @@ namespace Documents_backend.Controllers
                     table.Order = template.TemplateItems
                            .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
                            .Max(item => item.Order) + 1;
-                db.TemplateTables.Add(table);  
+                db.TemplateTables.Add(table);
+                template.TemplateItems.Add(table);
             }
             else
             {
@@ -111,7 +112,8 @@ namespace Documents_backend.Controllers
         [ActionName("get")]
         public Template Get(int id)
         {
-            Template template = db.Templates.Find(id);
+           
+            Template template = db.Templates.Include("TemplateType.TemplateTypePositions.Position").FirstOrDefault(t => t.Id == id);
             if (template == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
@@ -154,9 +156,10 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             if (template == null)
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, table you trying change not found");
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
             _UpdateItem(template, table);
+            template.UpdateDate = System.DateTime.Now;
             db.SaveChanges();
             return template.SortTemplateItems();
         }
@@ -167,9 +170,33 @@ namespace Documents_backend.Controllers
         {
             Template template = db.Templates.Find(id);
             if (template == null)
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, field you trying change not found");
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
             _UpdateItem(template, field);
+            template.UpdateDate = System.DateTime.Now;
+            db.SaveChanges();
+            return template.SortTemplateItems();
+        }
+
+
+        [HttpPut]
+        [ActionName("move-items")]
+        public Template MoveItem(int id, [FromBody] ItemMovementPOST body)
+        {
+            Template template = db.Templates.Find(id);
+            if (template == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
+
+            TemplateItem itemA = template.TemplateItems.FirstOrDefault(item => item.Id == body.FirstItemId);
+            TemplateItem itemB = template.TemplateItems.FirstOrDefault(item => item.Id == body.SecondItemId);
+            if (itemA == null || itemB == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot move template items, these items cannot be found");
+
+            int temp = itemA.Order;
+            itemA.Order = itemB.Order;
+            itemB.Order = temp;
+            template.UpdateDate = System.DateTime.Now;
+
             db.SaveChanges();
             return template.SortTemplateItems();
         }
@@ -205,6 +232,7 @@ namespace Documents_backend.Controllers
                 if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
 
+                template.UpdateDate = System.DateTime.Now;
                 db.TemplateFields.Remove(item);
                 _ResetOrder(template, item);
                 db.SaveChanges();
@@ -226,6 +254,7 @@ namespace Documents_backend.Controllers
                 if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot change template, some assets are still using it");
 
+                template.UpdateDate = System.DateTime.Now;
                 db.TemplateFields.RemoveRange(db.TemplateFields.Where(x => x.TemplateTableId == item.Id));
                 db.TemplateTables.Remove(item);
                 _ResetOrder(template, item);

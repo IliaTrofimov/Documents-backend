@@ -185,8 +185,46 @@
     <Compile Include="Migrations\202205031546054_user-groups.designer.cs">
       <DependentUpon>202205031546054_user-groups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205150844515_cascade-deleting.cs" />
+    <Compile Include="Migrations\202205150844515_cascade-deleting.designer.cs">
+      <DependentUpon>202205150844515_cascade-deleting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205192216591_signers_positions.cs" />
+    <Compile Include="Migrations\202205192216591_signers_positions.designer.cs">
+      <DependentUpon>202205192216591_signers_positions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205192247350_signers_positions1.cs" />
+    <Compile Include="Migrations\202205192247350_signers_positions1.designer.cs">
+      <DependentUpon>202205192247350_signers_positions1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205192251061_signers_positions2.cs" />
+    <Compile Include="Migrations\202205192251061_signers_positions2.designer.cs">
+      <DependentUpon>202205192251061_signers_positions2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205201910254_TemplateTypePositions.cs" />
+    <Compile Include="Migrations\202205201910254_TemplateTypePositions.designer.cs">
+      <DependentUpon>202205201910254_TemplateTypePositions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205202141588_TemplateTypePositions1.cs" />
+    <Compile Include="Migrations\202205202141588_TemplateTypePositions1.designer.cs">
+      <DependentUpon>202205202141588_TemplateTypePositions1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205202152308_TemplateTypePositions2.cs" />
+    <Compile Include="Migrations\202205202152308_TemplateTypePositions2.designer.cs">
+      <DependentUpon>202205202152308_TemplateTypePositions2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205202220434_TemplateTypePositions3.cs" />
+    <Compile Include="Migrations\202205202220434_TemplateTypePositions3.designer.cs">
+      <DependentUpon>202205202220434_TemplateTypePositions3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205210956332_potionname.cs" />
+    <Compile Include="Migrations\202205210956332_potionname.designer.cs">
+      <DependentUpon>202205210956332_potionname.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
+    <Compile Include="Models\Entities\TemplateTypePosition.cs" />
+    <Compile Include="Models\POST\ItemMovementPOST.cs" />
     <Compile Include="Models\POST\DocumentPOST.cs" />
     <Compile Include="Models\POST\SignPOST.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
@@ -237,6 +275,33 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202205031546054_user-groups.resx">
       <DependentUpon>202205031546054_user-groups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205150844515_cascade-deleting.resx">
+      <DependentUpon>202205150844515_cascade-deleting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205192216591_signers_positions.resx">
+      <DependentUpon>202205192216591_signers_positions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205192247350_signers_positions1.resx">
+      <DependentUpon>202205192247350_signers_positions1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205192251061_signers_positions2.resx">
+      <DependentUpon>202205192251061_signers_positions2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205201910254_TemplateTypePositions.resx">
+      <DependentUpon>202205201910254_TemplateTypePositions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205202141588_TemplateTypePositions1.resx">
+      <DependentUpon>202205202141588_TemplateTypePositions1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205202152308_TemplateTypePositions2.resx">
+      <DependentUpon>202205202152308_TemplateTypePositions2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205202220434_TemplateTypePositions3.resx">
+      <DependentUpon>202205202220434_TemplateTypePositions3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205210956332_potionname.resx">
+      <DependentUpon>202205210956332_potionname.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

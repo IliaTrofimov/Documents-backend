@@ -12,16 +12,22 @@ namespace Documents_backend.Models
         public Position()
         {
             Users = new HashSet<User>();
+            TemplateTypePositions = new HashSet<TemplateTypePosition>();
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+
         [StringLength(300)]
+        [Required]
         public string Name { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual ICollection<User> Users { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public virtual ICollection<TemplateTypePosition> TemplateTypePositions { get; set; }
     }
 }

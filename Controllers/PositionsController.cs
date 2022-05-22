@@ -59,7 +59,7 @@ namespace Documents_backend.Controllers
             Position pos = db.Positions.Find(id);
 
             if (pos == null)
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update group, group not found");
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update position, position not found");
 
             pos.Name = body.Name;
             db.SaveChanges();
@@ -73,10 +73,11 @@ namespace Documents_backend.Controllers
             Position pos = db.Positions.Find(id);
             if (pos != null)
             {
+                db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.Position.Id == id));
                 db.Positions.Remove(pos);
                 db.SaveChanges();
             }
-            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete group, group not found");
+            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete position, position not found");
         }
 
         protected override void Dispose(bool disposing)

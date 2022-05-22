@@ -21,10 +21,11 @@ namespace Documents_backend.Controllers
         [ActionName("whoami")]
         public UserDTO WhoAmI()
         {
-            var user = db.Users.Find(0);
+            var user = db.Users.FirstOrDefault();
             if (user == null)
             {
                 user = db.Users.Add(Models.User.CreateAdmin());
+                user.PositionId = 4;
                 db.SaveChanges();
             }
             return mapper.Map<UserDTO>(user);
@@ -85,6 +86,7 @@ namespace Documents_backend.Controllers
             found.PositionId = user.PositionId;
 
             db.SaveChanges();
+            db.Entry(found).Reference("Position").Load();
             return mapper.Map<UserDTO>(found);
         }
 

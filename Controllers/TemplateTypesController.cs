@@ -20,12 +20,13 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<TemplateTypeDTO> Get()
+        public IEnumerable<TemplateType> Get()
         {
-            var types = db.TemplateTypes;
+            var types = db.TemplateTypes.Include("TemplateTypePositions.Position");
             if (types == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-            return mapper.Map<IEnumerable<TemplateTypeDTO>>(types);
+
+            return types;
         }
 
         [HttpGet]
@@ -35,14 +36,24 @@ namespace Documents_backend.Controllers
             TemplateType type = db.TemplateTypes.Find(id);
             if (type == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+
             return type;
         }
 
 
         [HttpPost]
-        public int Post([FromBody] string name)
+        public int Post([FromBody] TemplateType type)
         {
-            TemplateType type = db.TemplateTypes.Add(new TemplateType() { Name = name });
+            var positions = type.TemplateTypePositions;
+            type = db.TemplateTypes.Add(new TemplateType() { Name = type.Name });
+            db.SaveChanges();
+
+            foreach (var item in positions)
+            {
+                item.TemplateTypeId = type.Id;
+                db.TemplateTypePositions.Add(item);
+            }
+
             db.SaveChanges();
             return type.Id;
         }
@@ -56,6 +67,8 @@ namespace Documents_backend.Controllers
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update template type, type not found");
 
             found.Name = type.Name;
+            db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.TemplateTypeId == id));
+            db.TemplateTypePositions.AddRange(type.TemplateTypePositions);
             db.SaveChanges();
         }
 
@@ -67,6 +80,8 @@ namespace Documents_backend.Controllers
             {
                 if (db.Templates.FirstOrDefault(t => t.TemplateTypeId == id) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template type, some assests still use it");
+                
+                db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.TemplateTypeId == id));
                 db.TemplateTypes.Remove(type);
                 db.SaveChanges();
             }
