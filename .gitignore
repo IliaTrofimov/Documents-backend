@@ -397,3 +397,5 @@ FodyWeavers.xsd
 /Migrations/202205150844515_cascade-deleting.Designer.cs
 /Migrations/202205150844515_cascade-deleting.cs
 *.resx
+/Migrations/202205231618217_dataitem.cs
+/Migrations/202205231618217_dataitem.Designer.cs

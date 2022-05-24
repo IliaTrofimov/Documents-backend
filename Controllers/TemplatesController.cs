@@ -18,7 +18,7 @@ namespace Documents_backend.Controllers
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
 
-        private void _UpdateItem(Template template, TemplateField field)
+        private TemplateField _UpdateItem(Template template, TemplateField field)
         {
             field.TemplateId = template.Id;
             if (field.Id == -1)
@@ -39,6 +39,7 @@ namespace Documents_backend.Controllers
 
                 db.TemplateFields.Add(field);
                 template.TemplateItems.Add(field);
+                return field;
             }
             else
             {
@@ -52,10 +53,11 @@ namespace Documents_backend.Controllers
                 if (field.TemplateTableId != null && db.TemplateTables.Find(field.TemplateTableId) == null)
                     throw new HttpResponseException(HttpStatusCode.BadRequest);
                 found.TemplateTableId = field.TemplateTableId;
+                return found;
             }
         }
 
-        private void _UpdateItem(Template template, TemplateTable table)
+        private TemplateTable _UpdateItem(Template template, TemplateTable table)
         {
             table.TemplateId = template.Id;
             if (table.Id == -1)
@@ -71,6 +73,7 @@ namespace Documents_backend.Controllers
                            .Max(item => item.Order) + 1;
                 db.TemplateTables.Add(table);
                 template.TemplateItems.Add(table);
+                return table;
             }
             else
             {
@@ -78,6 +81,7 @@ namespace Documents_backend.Controllers
                 found.Order = table.Order;
                 found.Name = table.Name;
                 found.Rows = table.Rows;
+                return found;
             }
         }
 
@@ -123,9 +127,14 @@ namespace Documents_backend.Controllers
 
         [HttpPost]
         [ActionName("post")]
-        public int Post()
+        public int Post([FromBody] Template body)
         {
-            Template template = db.Templates.Add(new Template() { UpdateDate = System.DateTime.Now });
+            Template template = db.Templates.Add(new Template() 
+            { 
+                Name = body.Name, 
+                TemplateTypeId = body.TemplateTypeId,
+                UpdateDate = System.DateTime.Now 
+            });
             db.SaveChanges();
             return template.Id;
         }
@@ -152,30 +161,30 @@ namespace Documents_backend.Controllers
 
         [HttpPut]
         [ActionName("put-table")]
-        public Template UpdateTable(int id, [FromBody] TemplateTable table)
+        public TemplateTable UpdateTable(int id, [FromBody] TemplateTable table)
         {
             Template template = db.Templates.Find(id);
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
-            _UpdateItem(template, table);
+            table = _UpdateItem(template, table);
             template.UpdateDate = System.DateTime.Now;
             db.SaveChanges();
-            return template.SortTemplateItems();
+            return table;
         }
 
         [HttpPut]
         [ActionName("put-field")]
-        public Template UpdateField(int id, [FromBody] TemplateField field)
+        public TemplateField UpdateField(int id, [FromBody] TemplateField field)
         {
             Template template = db.Templates.Find(id);
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
-            _UpdateItem(template, field);
+            field = _UpdateItem(template, field);
             template.UpdateDate = System.DateTime.Now;
             db.SaveChanges();
-            return template.SortTemplateItems();
+            return field;
         }
 
 

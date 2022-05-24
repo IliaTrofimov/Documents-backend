@@ -21,7 +21,7 @@ namespace Documents_backend.Controllers
         [ActionName("whoami")]
         public UserDTO WhoAmI()
         {
-            var user = db.Users.FirstOrDefault();
+            var user = db.Users.Include("Position").FirstOrDefault();
             if (user == null)
             {
                 user = db.Users.Add(Models.User.CreateAdmin());

@@ -5,7 +5,6 @@ namespace Documents_backend.Models
 {
     public partial class DocumentDTO
     {      
-
         public int Id { get; set; }
 
         public string Name { get; set; }

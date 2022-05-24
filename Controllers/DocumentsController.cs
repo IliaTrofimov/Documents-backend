@@ -22,7 +22,7 @@ namespace Documents_backend.Controllers
         [ActionName("list")]
         public IEnumerable<DocumentDTO> Get()
         {
-            var documents = db.Documents;
+            var documents = db.Documents.Include("Template");
             if (documents == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
             return mapper.Map<IEnumerable<DocumentDTO>>(documents.ToList());
@@ -32,7 +32,12 @@ namespace Documents_backend.Controllers
         [ActionName("get")]
         public Document Get(int id)
         {
-            Document document = db.Documents.Find(id);
+            Document document = db.Documents
+                .Include("Template.TemplateItems")
+                .Include("DocumentDataItems")
+                .Include("Template.TemplateType.TemplateTypePositions.Position")
+                .FirstOrDefault(d => d.Id == id);
+
             if (document == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
@@ -49,22 +54,24 @@ namespace Documents_backend.Controllers
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot create document from template, template not found");
 
-            Document document = new Document() { TemplateId = body.TemplateId, UpdateDate = System.DateTime.Now };
-            db.Documents.Add(document);
+            Document document = db.Documents.Add(new Document() { 
+                TemplateId = body.TemplateId,
+                UpdateDate = System.DateTime.Now 
+            });
             db.SaveChanges();
 
             foreach (var item in template.TemplateItems)
             {
                 if (item is TemplateField field)
-                    db.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.Id, Document = document });
+                    document.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.Id, Document = document });
                 else if (item is TemplateTable table)
                 {
                     foreach (var col in table.TemplateFields)
                         for (int i = 0; i < table.Rows; i++)
-                            db.DocumentDataItems.Add(new DocumentDataItem() 
+                            document.DocumentDataItems.Add(new DocumentDataItem() 
                             { 
                                 FieldId = col.Id, 
-                                Document = document, 
+                                Document = document,
                                 Row = i 
                             });
                 }
@@ -149,7 +156,7 @@ namespace Documents_backend.Controllers
             if (info != null)
             {
                 db.Documents.Remove(info);
-                db.DocumentDataItems.RemoveRange(db.DocumentDataItems.Where(i => i.DocumentId == id));
+                db.DocumentDataItems.RemoveRange(db.DocumentDataItems.Where(i => i.Document == info));
                 db.SaveChanges();
                 Ok();
             }

@@ -18,57 +18,6 @@ namespace Documents_backend.Migrations
 
         protected override void Seed(DataContext context)
         {
-            return;
-            context.TemplateFields.RemoveRange(context.TemplateFields);
-            context.TemplateTables.RemoveRange(context.TemplateTables);
-            context.Templates.RemoveRange(context.Templates);
-            context.Users.RemoveRange(context.Users);
-            context.TemplateTypes.RemoveRange(context.TemplateTypes);
-
-            string[] names = new string[] { "Илья", "Антон", "Пётр", "Иван", "Алексей" };
-            string[] lastnames = new string[] { "Иванов", "Гаврилов", "Сидоров", "Соколов", "Трофимов" };
-
-            for (int i = 1; i <= 5; i++)
-            {
-                context.TemplateTypes.Add(new TemplateType() { Name = $"Тип {i}" });
-                context.Users.Add(new User() { Firstname = names[i - 1], Lastname = lastnames[i - 1] });
-            }
-               
-
-            for (int i = 1; i <= 10; i++)
-            {
-                Template t = new Template() { 
-                    Name = $"Шаблон {i}", 
-                };
-
-                for (int j = 1; j <= 6 && j < i; j++)
-                {
-                    TemplateField f = new TemplateField() {
-                        Name = $"Поле {i}-{j}", Template = t, Order = j - 1 
-                    };
-                    t.TemplateItems.Add(f);
-                    context.TemplateFields.Add(f);
-                }
-
-                if (i > 6)
-                {
-                    TemplateTable tt = new TemplateTable() {
-                        Name = "Таблица 1", Template = t, Order = 6, Rows = 5
-                    };
-                    context.TemplateTables.Add(tt);
-
-                    for (int j = 1; j <= 3; j++)
-                    {
-                        TemplateField c = new TemplateField() {
-                            Name = $"Колонка {i}-1-{j}", TemplateTable = tt , Order = j - 1, Template = t  
-                        };
-                        tt.TemplateFields.Add(c);
-                        t.TemplateItems.Add(c);
-                        context.TemplateFields.Add(c);
-                    }
-                }
-            }
-
             context.SaveChanges();
         }
     }

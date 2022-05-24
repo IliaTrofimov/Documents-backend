@@ -21,10 +21,6 @@ namespace Documents_backend.Models
         [Required]
         public virtual Document Document { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
-        [Required]
-        public int DocumentId { get; set; }
-
         public int? Row { get; set; }
     }
 }

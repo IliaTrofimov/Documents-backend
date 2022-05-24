@@ -221,6 +221,10 @@
     <Compile Include="Migrations\202205210956332_potionname.designer.cs">
       <DependentUpon>202205210956332_potionname.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205231618217_dataitem.cs" />
+    <Compile Include="Migrations\202205231618217_dataitem.designer.cs">
+      <DependentUpon>202205231618217_dataitem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
     <Compile Include="Models\Entities\TemplateTypePosition.cs" />
@@ -302,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205210956332_potionname.resx">
       <DependentUpon>202205210956332_potionname.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205231618217_dataitem.resx">
+      <DependentUpon>202205231618217_dataitem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
