@@ -131,11 +131,20 @@ namespace Documents_backend.Controllers
         [ActionName("post")]
         public int Post([FromBody] Template body)
         {
+            var user = db.Users.FirstOrDefault();
+            if (user == null)
+            {
+                user = db.Users.Add(Models.User.CreateAdmin());
+                user.PositionId = 4;
+                db.SaveChanges();
+            }
+
             Template template = db.Templates.Add(new Template() 
             { 
                 Name = body.Name, 
                 TemplateTypeId = body.TemplateTypeId,
-                UpdateDate = System.DateTime.Now 
+                UpdateDate = System.DateTime.Now,
+                AuthorId = user.Id
             });
             db.SaveChanges();
             return template.Id;

@@ -54,9 +54,20 @@ namespace Documents_backend.Controllers
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot create document from template, template not found");
 
-            Document document = db.Documents.Add(new Document() { 
+            var user = db.Users.FirstOrDefault();
+            if (user == null)
+            {
+                user = db.Users.Add(Models.User.CreateAdmin());
+                user.PositionId = 4;
+                db.SaveChanges();
+            }
+
+            Document document = db.Documents.Add(new Document()
+            {
                 TemplateId = body.TemplateId,
-                UpdateDate = System.DateTime.Now 
+                UpdateDate = System.DateTime.Now,
+                AuthorId = user.Id,
+                Name = body.Name
             });
             db.SaveChanges();
 

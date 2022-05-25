@@ -46,7 +46,13 @@ namespace Documents_backend.Controllers
         [ActionName("get")]
         public UserDTORich Get(int id)
         {
-            User user = db.Users.Include(_user => _user.Position).FirstOrDefault(_user => _user.Id == id);
+            User user = db.Users
+                .Include(_user => _user.Position)
+                .Include(_user => _user.Documents)
+                .Include(_user => _user.Templates)
+                .Include(_user => _user.Signs)
+                .FirstOrDefault(_user => _user.Id == id);
+
             if (user == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             

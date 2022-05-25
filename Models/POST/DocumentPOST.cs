@@ -4,5 +4,6 @@
     {
         public int TemplateId;
         public int PreviousId;
+        public string Name;
     }
 }
