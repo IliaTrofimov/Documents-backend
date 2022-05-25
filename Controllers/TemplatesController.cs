@@ -50,6 +50,8 @@ namespace Documents_backend.Controllers
                 found.DataType = field.DataType;
                 found.Required = field.Required;
                 found.Restriction = field.Restriction;
+                found.RestrictionType = field.RestrictionType;
+
                 if (field.TemplateTableId != null && db.TemplateTables.Find(field.TemplateTableId) == null)
                     throw new HttpResponseException(HttpStatusCode.BadRequest);
                 found.TemplateTableId = field.TemplateTableId;
@@ -220,7 +222,9 @@ namespace Documents_backend.Controllers
             {
                 if (db.Documents.FirstOrDefault(d => d.TemplateId == id) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template, some assets are still using it");
+                
                 db.TemplateFields.RemoveRange(db.TemplateFields.Where(f => f.TemplateId == id));
+                db.TemplateTables.RemoveRange(db.TemplateTables.Where(f => f.TemplateId == id));
                 db.SaveChanges();
                 db.Templates.Remove(template);
                 db.SaveChanges();

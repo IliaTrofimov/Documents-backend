@@ -18,7 +18,8 @@ namespace Documents_backend
         {
             mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Document, DocumentDTO>();
+                cfg.CreateMap<Document, DocumentDTO>()
+                    .ForMember(dto => dto.TemplateName, act => act.MapFrom(doc => doc.Template.Name)); ;
 
                 cfg.CreateMap<DocumentDataItem, DocumentDataItemDTO>();
 
@@ -32,7 +33,7 @@ namespace Documents_backend
                 cfg.CreateMap<Sign, SignDTO>()
                     .ForMember(dto => dto.UserName, act => act.MapFrom(sign => $"{sign.User.Lastname} {sign.User.Firstname[0]}."))
                     .ForMember(dto => dto.DocumentName, act => act.MapFrom(sign => sign.Document.Name));
-
+                   
             });
             mapperConfig.AssertConfigurationIsValid();
             var mapper = mapperConfig.CreateMapper();

@@ -11,6 +11,8 @@ namespace Documents_backend.Models
 
         public int TemplateId { get; set; }
 
+        public string TemplateName { get; set; }
+
         public int Type { get; set; }
 
         public DateTime UpdateDate { get; set; }

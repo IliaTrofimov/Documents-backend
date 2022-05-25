@@ -155,8 +155,8 @@ namespace Documents_backend.Controllers
             Document info = db.Documents.Find(id);
             if (info != null)
             {
+                db.DocumentDataItems.RemoveRange(db.DocumentDataItems.Where(i => i.Document.Id == info.Id));
                 db.Documents.Remove(info);
-                db.DocumentDataItems.RemoveRange(db.DocumentDataItems.Where(i => i.Document == info));
                 db.SaveChanges();
                 Ok();
             }
