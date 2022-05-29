@@ -20,13 +20,20 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<TemplateType> Get()
+        public IEnumerable<TemplateType> Get(int page = 0, int pageSize = -1)
         {
-            var types = db.TemplateTypes.Include("TemplateTypePositions.Position");
+            IQueryable<TemplateType> types;
+            if (pageSize != -1)
+                types = db.TemplateTypes.Include("TemplateTypePositions.Position")
+                    .OrderBy(type => type.Id)
+                    .Skip(page * pageSize)
+                    .Take(pageSize);
+            else
+                types = db.TemplateTypes.Include("TemplateTypePositions.Position");
+
             if (types == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-
-            return types;
+            return types.ToList();
         }
 
         [HttpGet]

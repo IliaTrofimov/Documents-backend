@@ -20,11 +20,24 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<DocumentDTO> Get()
+        public IEnumerable<DocumentDTO> Get(int page = 0, int pageSize = -1, int template = -1, int user = -1, int type = -1)
         {
-            var documents = db.Documents.Include("Template");
+            IQueryable<Document> documents;
+            if (pageSize != -1)
+                documents = db.Documents.Include("Template")
+                    .OrderBy(t => t.Id)
+                    .Skip(page * pageSize)
+                    .Take(pageSize)
+                    .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) && 
+                        (template != -1 || d.TemplateId == template));
+            else
+                documents = db.Documents.Include("Template")
+                    .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
+                        (template != -1 || d.TemplateId == template));
+
             if (documents == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
+
             return mapper.Map<IEnumerable<DocumentDTO>>(documents.ToList());
         }
 

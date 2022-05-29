@@ -17,12 +17,19 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<Position> Get()
+        public IEnumerable<Position> Get(int page = 0, int pageSize = -1)
         {
-            var groups = db.Positions;
-            if (groups == null)
+            IQueryable<Position> postions;
+            if (pageSize != -1)
+                postions = db.Positions.OrderBy(pos => pos.Id)
+                    .Skip(page * pageSize)
+                    .Take(pageSize);
+            else
+                postions = db.Positions;
+
+            if (postions == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-            return groups.ToList();
+            return postions.ToList();
         }
 
         [HttpGet]

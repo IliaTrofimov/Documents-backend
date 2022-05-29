@@ -4,7 +4,7 @@ using System.Web.Http;
 
 namespace Documents_backend.Utility
 {
-    public static class HttpHelpers
+    public static class ControllerExtentions
     {
         /// <summary>
         /// Throws HttpResponse exception with given message and code.

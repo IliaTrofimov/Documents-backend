@@ -20,11 +20,11 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("get")]
-        public IEnumerable<SignDTO> Get(int? documentId = null, int? userId = null)
+        public IEnumerable<SignDTO> Get(int documentId = -1, int userId = -1, int page = 0, int pageSize = -1)
         {
-            if (documentId == null && userId == null)
+            if (documentId == -1 && userId == -1)
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot find signatory, document or user were not specified");
-            if (documentId != null && userId != null)
+            if (documentId != -1 && userId != -1)
             {
                 var sign = db.Signs.Find(documentId, userId);
                 if (sign == null)
@@ -33,9 +33,16 @@ namespace Documents_backend.Controllers
             }
             else
             {
-                var signs = from sign in db.Signs
-                            where userId != null && sign.UserId == userId || documentId != null && sign.DocumentId == documentId
-                            select sign;
+                IQueryable<Sign> signs;
+                if (pageSize != -1)
+                    signs = db.Signs.OrderBy(sign => sign.UpdateDate)
+                        .Skip(page * pageSize)
+                        .Take(pageSize)
+                        .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
+                else
+                    signs = db.Signs.OrderBy(sign => sign.UpdateDate)
+                        .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
+               
                 if (signs == null)
                     throw new HttpResponseException(HttpStatusCode.NoContent);
                 return mapper.Map<IEnumerable<SignDTO>>(signs);
