@@ -17,6 +17,13 @@ namespace Documents_backend.Controllers
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
+        [HttpGet]
+        [ActionName("count")]
+        public int Count(int template = -1, int user = -1, int type = -1)
+        {
+            return db.Documents.Count(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
+                        (template != -1 || d.TemplateId == template));
+        }
 
         [HttpGet]
         [ActionName("list")]

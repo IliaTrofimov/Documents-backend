@@ -19,6 +19,13 @@ namespace Documents_backend.Controllers
 
 
         [HttpGet]
+        [ActionName("count")]
+        public int Count()
+        {
+            return db.TemplateTypes.Count();
+        }
+
+        [HttpGet]
         [ActionName("list")]
         public IEnumerable<TemplateType> Get(int page = 0, int pageSize = -1)
         {
