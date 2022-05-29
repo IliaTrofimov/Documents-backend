@@ -36,11 +36,11 @@ namespace Documents_backend.Controllers
                     .Skip(page * pageSize)
                     .Take(pageSize)
                     .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) && 
-                        (template != -1 || d.TemplateId == template));
+                        (template == -1 || d.TemplateId == template));
             else
                 documents = db.Documents.Include("Template")
                     .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
-                        (template != -1 || d.TemplateId == template));
+                        (template == -1 || d.TemplateId == template));
 
             if (documents == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
