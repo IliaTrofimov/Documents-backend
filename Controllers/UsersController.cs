@@ -18,6 +18,14 @@ namespace Documents_backend.Controllers
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
         [HttpGet]
+        [ActionName("count")]
+        public int Count(int position = -1)
+        {
+            return db.Users.Count(user => position == -1 || user.PositionId == position);
+        }
+
+
+        [HttpGet]
         [ActionName("whoami")]
         public UserDTO WhoAmI()
         {

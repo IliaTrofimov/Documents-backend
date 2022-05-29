@@ -17,6 +17,12 @@ namespace Documents_backend.Controllers
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
 
+        [HttpGet]
+        [ActionName("count")]
+        public int Count(int documentId = -1, int userId = -1)
+        {
+            return db.Signs.Count(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
+        }
 
         [HttpGet]
         [ActionName("get")]

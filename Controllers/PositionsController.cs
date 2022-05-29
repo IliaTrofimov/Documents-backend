@@ -16,6 +16,13 @@ namespace Documents_backend.Controllers
         DataContext db = new DataContext();
 
         [HttpGet]
+        [ActionName("count")]
+        public int Count()
+        {
+            return db.Positions.Count();
+        }
+
+        [HttpGet]
         [ActionName("list")]
         public IEnumerable<Position> Get(int page = 0, int pageSize = -1)
         {

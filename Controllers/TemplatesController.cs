@@ -105,6 +105,34 @@ namespace Documents_backend.Controllers
 
 
         [HttpGet]
+        [ActionName("count")] 
+        public int Count(int user = -1, int type = -1, bool showDepricated = true)
+        {
+            return db.Templates.Count(t => (type == -1 || t.TemplateTypeId == type) &&
+                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+        }
+
+        public IEnumerable<TemplateDTO> Get(int page = 0, int pageSize = -1, int user = -1, int type = -1, bool showDepricated = true)
+        {
+            IQueryable<Template> templates;
+            if (pageSize != -1)
+                templates = db.Templates.OrderBy(t => t.Id)
+                    .Skip(page * pageSize)
+                    .Take(pageSize)
+                    .Where(t => (type == -1 || t.TemplateTypeId == type) &&
+                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+            else
+                templates = db.Templates.Where(t => (type == -1 || t.TemplateTypeId == type) &&
+                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+
+            if (templates == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+
+            return mapper.Map<IEnumerable<TemplateDTO>>(templates.ToList());
+        }
+
+
+        [HttpGet]
         [ActionName("list")]
         public IEnumerable<TemplateDTO> Get(int page = 0, int pageSize = -1, int user = -1, int type = -1, bool showDepricated = true)
         {
