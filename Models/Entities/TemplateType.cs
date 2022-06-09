@@ -10,7 +10,7 @@ namespace Documents_backend.Models
         public TemplateType()
         {
             Template = new HashSet<Template>();
-            TemplateTypePositions = new HashSet<TemplateTypePosition>();
+            Positions = new HashSet<Position>();
         }
 
         [Key]
@@ -23,6 +23,6 @@ namespace Documents_backend.Models
         [Newtonsoft.Json.JsonIgnore]
         public virtual ICollection<Template> Template { get; set; }
 
-        public virtual ICollection<TemplateTypePosition> TemplateTypePositions { get; set; }
+        public virtual ICollection<Position> Positions { get; set; }
     }
 }

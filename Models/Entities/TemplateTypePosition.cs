@@ -7,13 +7,12 @@ namespace Documents_backend.Models
     public partial class TemplateTypePosition
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
         public int TemplateTypeId { get; set; }
 
-        [Required]
+
         public Position Position { get; set; }
+        public int PositionId { get; set; }
     }
 }

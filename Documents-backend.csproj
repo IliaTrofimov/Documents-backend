@@ -261,6 +261,14 @@
     <Compile Include="Migrations\202205231618217_dataitem.designer.cs">
       <DependentUpon>202205231618217_dataitem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206031148593_templatetypeposition.cs" />
+    <Compile Include="Migrations\202206031148593_templatetypeposition.designer.cs">
+      <DependentUpon>202206031148593_templatetypeposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206061807016_templateType_position.cs" />
+    <Compile Include="Migrations\202206061807016_templateType_position.designer.cs">
+      <DependentUpon>202206061807016_templateType_position.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
     <Compile Include="Models\Entities\TemplateTypePosition.cs" />
@@ -345,6 +353,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205231618217_dataitem.resx">
       <DependentUpon>202205231618217_dataitem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206031148593_templatetypeposition.resx">
+      <DependentUpon>202206031148593_templatetypeposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206061807016_templateType_position.resx">
+      <DependentUpon>202206061807016_templateType_position.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -87,7 +87,6 @@ namespace Documents_backend.Controllers
             Position pos = db.Positions.Find(id);
             if (pos != null)
             {
-                db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.Position.Id == id));
                 db.Positions.Remove(pos);
                 db.SaveChanges();
             }

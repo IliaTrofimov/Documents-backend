@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
-
 using Documents_backend.Utility;
 using Documents_backend.Models;
 
@@ -31,12 +30,12 @@ namespace Documents_backend.Controllers
         {
             IQueryable<TemplateType> types;
             if (pageSize != -1)
-                types = db.TemplateTypes.Include("TemplateTypePositions.Position")
+                types = db.TemplateTypes.Include("Positions")
                     .OrderBy(type => type.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize);
             else
-                types = db.TemplateTypes.Include("TemplateTypePositions.Position");
+                types = db.TemplateTypes.Include("Positions");
 
             if (types == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
@@ -58,32 +57,42 @@ namespace Documents_backend.Controllers
         [HttpPost]
         public int Post([FromBody] TemplateType type)
         {
-            var positions = type.TemplateTypePositions;
-            type = db.TemplateTypes.Add(new TemplateType() { Name = type.Name });
-            db.SaveChanges();
-
-            foreach (var item in positions)
+            var newType = db.TemplateTypes.Add(new TemplateType() { Name = type.Name });
+            foreach (var pos in type.Positions)
             {
-                item.TemplateTypeId = type.Id;
-                db.TemplateTypePositions.Add(item);
+                if (!newType.Positions.Contains(pos))
+                {
+                    var p = db.Positions.Find(pos.Id);
+                    if (p != null)
+                        newType.Positions.Add(p);
+                }
             }
-
             db.SaveChanges();
-            return type.Id;
+            return newType.Id;
         }
 
 
         [HttpPut]
-        public void Put(int id, [FromBody] TemplateType type)
+        public TemplateType Put(int id, [FromBody] TemplateType type)
         {
             TemplateType found = db.TemplateTypes.Find(id);
             if (type == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update template type, type not found");
 
             found.Name = type.Name;
-            db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.TemplateTypeId == id));
-            db.TemplateTypePositions.AddRange(type.TemplateTypePositions);
+            found.Positions = found.Positions.Where(p => type.Positions.Contains(p)).ToList();
+            foreach (var pos in type.Positions)
+            {
+                if (!found.Positions.Contains(pos))
+                {
+                    var p = db.Positions.Find(pos.Id);
+                    if (p != null)
+                        found.Positions.Add(p);
+                }
+            }
+                    
             db.SaveChanges();
+            return found;
         }
 
         [HttpDelete]
@@ -95,7 +104,6 @@ namespace Documents_backend.Controllers
                 if (db.Templates.FirstOrDefault(t => t.TemplateTypeId == id) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template type, some assests still use it");
                 
-                db.TemplateTypePositions.RemoveRange(db.TemplateTypePositions.Where(p => p.TemplateTypeId == id));
                 db.TemplateTypes.Remove(type);
                 db.SaveChanges();
             }

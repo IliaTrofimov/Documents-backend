@@ -139,7 +139,7 @@ namespace Documents_backend.Controllers
         public Template Get(int id)
         {
            
-            Template template = db.Templates.Include("TemplateType.TemplateTypePositions.Position").FirstOrDefault(t => t.Id == id);
+            Template template = db.Templates.Include("TemplateType.Positions").FirstOrDefault(t => t.Id == id);
             if (template == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 

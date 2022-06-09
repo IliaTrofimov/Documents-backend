@@ -55,7 +55,7 @@ namespace Documents_backend.Controllers
             Document document = db.Documents
                 .Include("Template.TemplateItems")
                 .Include("DocumentDataItems")
-                .Include("Template.TemplateType.TemplateTypePositions.Position")
+                .Include("Template.TemplateType.Positions")
                 .FirstOrDefault(d => d.Id == id);
 
             if (document == null)
