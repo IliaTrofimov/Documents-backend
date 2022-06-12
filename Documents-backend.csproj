@@ -269,6 +269,10 @@
     <Compile Include="Migrations\202206061807016_templateType_position.designer.cs">
       <DependentUpon>202206061807016_templateType_position.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206121610092_fix.cs" />
+    <Compile Include="Migrations\202206121610092_fix.designer.cs">
+      <DependentUpon>202206121610092_fix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
     <Compile Include="Models\Entities\TemplateTypePosition.cs" />
@@ -359,6 +363,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206061807016_templateType_position.resx">
       <DependentUpon>202206061807016_templateType_position.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206121610092_fix.resx">
+      <DependentUpon>202206121610092_fix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
