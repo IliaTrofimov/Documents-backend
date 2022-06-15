@@ -83,14 +83,15 @@ namespace Documents_backend.Controllers
         [ActionName("post")]
         public int Post([FromBody] UserDTO user)
         {
-            User newUser = db.Users.Add(new User() 
-            { 
-                Firstname = user.Firstname, 
-                Lastname = user.Lastname, 
+            User newUser = db.Users.Add(new User()
+            {
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
                 Fathersname = user.Fathersname,
                 PositionId = user.PositionId,
-                Permissions = user.Permissions
-            });
+                Permissions = user.Permissions,
+                Email = user.Email
+            }) ;
             db.SaveChanges();
             return newUser.Id;
         }
@@ -109,6 +110,7 @@ namespace Documents_backend.Controllers
             found.Lastname = user.Lastname;
             found.Permissions = user.Permissions;
             found.PositionId = user.PositionId;
+            found.Email = user.Email;
 
             db.SaveChanges();
             db.Entry(found).Reference("Position").Load();
