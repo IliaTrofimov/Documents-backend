@@ -14,5 +14,7 @@ namespace Documents_backend.Models
 
         public Position Position { get; set; }
         public int? PositionId { get; set; }
+
+        public string Email { get; set; }
     }
 }
