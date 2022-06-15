@@ -43,6 +43,7 @@ namespace Documents_backend.Models
 
         public virtual ICollection<Template> Templates { get; set; }
 
+        public string Email { get; set; }
 
         public string GetFIO()
         {
