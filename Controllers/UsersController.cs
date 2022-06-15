@@ -41,7 +41,7 @@ namespace Documents_backend.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<UserDTO> Get(int page = 0, int pageSize = -1, int position = -1)
+        public IEnumerable<UserDTO> Get(int page = 0, int pageSize = -1, int position = -1, int permissions = -1)
         {
             IQueryable<User> users;
             if (pageSize != -1)
@@ -49,11 +49,11 @@ namespace Documents_backend.Controllers
                     .OrderBy(user => user.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize)
-                    .Where(user => position == -1 || user.PositionId == position);
+                    .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions));
             else
                 users = db.Users.Include(user => user.Position)
                    .OrderBy(user => user.Id)
-                   .Where(user => position == -1 || user.PositionId == position);
+                   .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions));
 
             if (users == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);

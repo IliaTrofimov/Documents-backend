@@ -275,7 +275,6 @@
     </Compile>
     <Compile Include="Models\Entities\Position.cs" />
     <Compile Include="Models\Entities\TemplateItem.cs" />
-    <Compile Include="Models\Entities\TemplateTypePosition.cs" />
     <Compile Include="Models\POST\ItemMovementPOST.cs" />
     <Compile Include="Models\POST\DocumentPOST.cs" />
     <Compile Include="Models\POST\SignPOST.cs" />
