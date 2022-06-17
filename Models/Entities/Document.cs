@@ -44,9 +44,7 @@ namespace Documents_backend.Models
         public string AuthorName => Author != null ? Author.GetFIO() : "Неизвестно";
         public int? AuthorId { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
         public virtual User Author { get; set; }
-
 
         public virtual ICollection<DocumentDataItem> DocumentDataItems { get; set; }
 

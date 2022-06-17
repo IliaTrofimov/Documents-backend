@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Documents_backend")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bayer")]
 [assembly: AssemblyProduct("Documents backend")]
-[assembly: AssemblyCopyright("© , 2022")]
+[assembly: AssemblyCopyright("© Ilia Trofimov, 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

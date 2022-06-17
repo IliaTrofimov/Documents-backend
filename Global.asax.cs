@@ -31,7 +31,9 @@ namespace Documents_backend
                 cfg.CreateMap<User, UserDTO>();
 
                 cfg.CreateMap<Sign, SignDTO>()
-                    .ForMember(dto => dto.UserName, act => act.MapFrom(sign => $"{sign.User.Lastname} {sign.User.Firstname[0]}."))
+                    .ForMember(dto => dto.Firstname, act => act.MapFrom(sign =>sign.User.Firstname))
+                    .ForMember(dto => dto.Lastname, act => act.MapFrom(sign => sign.User.Lastname))
+                    .ForMember(dto => dto.Fathersname, act => act.MapFrom(sign => sign.User.Fathersname))
                     .ForMember(dto => dto.DocumentName, act => act.MapFrom(sign => sign.Document.Name));
                    
             });
@@ -49,8 +51,6 @@ namespace Documents_backend
         {
             var context = HttpContext.Current;
             var response = context.Response;
-
-           
 
             if (context.Request.HttpMethod == "OPTIONS")
             {

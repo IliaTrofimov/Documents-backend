@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
@@ -17,7 +16,6 @@ namespace Documents_backend.Models
         public virtual DbSet<TemplateType> TemplateTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
-        public virtual DbSet<TemplateTypePosition> TemplateTypePositions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

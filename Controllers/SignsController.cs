@@ -32,7 +32,7 @@ namespace Documents_backend.Controllers
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot find signatory, document or user were not specified");
             if (documentId != -1 && userId != -1)
             {
-                var sign = db.Signs.Find(documentId, userId);
+                var sign = db.Signs.FirstOrDefault(s => s.DocumentId == documentId && s.UserId == userId);
                 if (sign == null)
                     throw new HttpResponseException(HttpStatusCode.NotFound);
                 return mapper.Map<IEnumerable<SignDTO>>(new Sign[]{ sign });
@@ -41,12 +41,12 @@ namespace Documents_backend.Controllers
             {
                 IQueryable<Sign> signs;
                 if (pageSize != -1)
-                    signs = db.Signs.OrderBy(sign => sign.UpdateDate)
+                    signs = db.Signs.OrderBy(sign => sign.SignerPositionId)
                         .Skip(page * pageSize)
                         .Take(pageSize)
                         .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
                 else
-                    signs = db.Signs.OrderBy(sign => sign.UpdateDate)
+                    signs = db.Signs.OrderBy(sign => sign.SignerPositionId)
                         .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
                
                 if (signs == null)

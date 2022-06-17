@@ -28,8 +28,9 @@ namespace Documents_backend.Models
         public int SignerPositionId { get; set; }
         public virtual Position SignerPosition { get; set; }
 
-
+        [Required]
         public System.DateTime UpdateDate { get; set; }
+        [Required]
         public System.DateTime CreateDate { get; set; }
     }
 }
