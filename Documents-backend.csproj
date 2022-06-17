@@ -224,31 +224,9 @@
     <Compile Include="Migrations\202206162140032_datetime.designer.cs">
       <DependentUpon>202206162140032_datetime.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Entities\Position.cs" />
-    <Compile Include="Models\Entities\TemplateItem.cs" />
-    <Compile Include="Models\POST\ItemMovementPOST.cs" />
-    <Compile Include="Models\POST\DocumentPOST.cs" />
-    <Compile Include="Models\POST\SignPOST.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
-    <Compile Include="Models\DataTransferObjects\DocumentDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\DocumentDataItemDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\DocumentTableCellDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\SignDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\TemplateDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\TemplateTypeDTO.cs" />
-    <Compile Include="Models\DataTransferObjects\UserDTO_Rich.cs" />
-    <Compile Include="Models\DataTransferObjects\UserDTO.cs" />
-    <Compile Include="Models\Entities\TemplateTable.cs" />
-    <Compile Include="Models\Entities\Document.cs" />
-    <Compile Include="Models\Entities\DocumentDataItem.cs" />
-    <Compile Include="Models\Entities\Sign.cs" />
-    <Compile Include="Models\Entities\Template.cs" />
-    <Compile Include="Models\Entities\TemplateField.cs" />
-    <Compile Include="Models\Entities\TemplateType.cs" />
-    <Compile Include="Models\Entities\User.cs" />
-    <Compile Include="Models\Administrative\UserPermission.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ControllerExtentions.cs" />
   </ItemGroup>
@@ -279,9 +257,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Documents-Entities\Documents-Entities.csproj">
+    <ProjectReference Include="..\Documents-Entities\Documents-entities.csproj">
       <Project>{2157a828-d4a5-45f5-a17a-870892e50116}</Project>
-      <Name>Documents-Entities</Name>
+      <Name>Documents-entities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

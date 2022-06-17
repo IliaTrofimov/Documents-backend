@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using System.Net;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
 using System.Data.Entity;
 
 using Documents_backend.Utility;
-using Documents_backend.Models;
-using System.Linq;
+using Documents_Entities.DTO;
+using Documents_Entities.Entities;
 
 namespace Documents_backend.Controllers
 {
@@ -32,7 +33,7 @@ namespace Documents_backend.Controllers
             var user = db.Users.Include("Position").FirstOrDefault();
             if (user == null)
             {
-                user = db.Users.Add(Models.User.CreateAdmin());
+                user = db.Users.Add(Documents_Entities.Entities.User.CreateAdmin());
                 user.PositionId = 4;
                 db.SaveChanges();
             }

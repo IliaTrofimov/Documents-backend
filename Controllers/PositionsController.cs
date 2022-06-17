@@ -5,8 +5,7 @@ using System.Web.Http.Cors;
 using System.Collections.Generic;
 
 using Documents_backend.Utility;
-using Documents_backend.Models;
-
+using Documents_Entities.Entities;
 
 namespace Documents_backend.Controllers
 {

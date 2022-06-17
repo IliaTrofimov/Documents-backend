@@ -6,8 +6,9 @@ using System.Web.Http.Cors;
 using System.Collections.Generic;
 
 using Documents_backend.Utility;
-using Documents_backend.Models;
-
+using Documents_Entities.DTO;
+using Documents_Entities.Entities;
+using Documents_Entities.POST;
 
 namespace Documents_backend.Controllers
 {
@@ -58,7 +59,7 @@ namespace Documents_backend.Controllers
 
         [HttpPost]
         [ActionName("post")]
-        public void Post([FromBody] Models.POST.SignPOST body)
+        public void Post([FromBody] SignPOST body)
         {
             if (db.Users.Find(body.UserId) == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot create signatory, signer not found");
@@ -72,7 +73,7 @@ namespace Documents_backend.Controllers
 
         [HttpPut]
         [ActionName("put")]
-        public void Put([FromBody] Models.POST.SignPOST body)
+        public void Put([FromBody] SignPOST body)
         {
             Sign sign = db.Signs.Find(body.DocumentId, body.UserId);
             if (sign == null)
@@ -85,7 +86,7 @@ namespace Documents_backend.Controllers
 
         [HttpDelete]
         [ActionName("delete")]
-        public void Delete([FromBody] Models.POST.SignPOST body)
+        public void Delete([FromBody] SignPOST body)
         {
             Sign sign = db.Signs.Find(body.DocumentId, body.UserId);
             if (sign != null)

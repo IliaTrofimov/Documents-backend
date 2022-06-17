@@ -2,7 +2,6 @@
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Model;
 using System.Data.Entity.SqlServer;
-using Documents_backend.Models;
 
 namespace Documents_backend.Migrations
 {

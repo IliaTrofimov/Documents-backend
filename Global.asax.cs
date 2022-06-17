@@ -1,11 +1,11 @@
 using AutoMapper;
-using Documents_backend.Handlers;
-using Documents_backend.Models;
-using Documents_backend.Models.Administrative;
 using System.Data.Entity;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+
+using Documents_Entities.DTO;
+using Documents_Entities.Entities;
 
 
 namespace Documents_backend

@@ -6,8 +6,10 @@ using System.Web.Http.Cors;
 using System.Collections.Generic;
 
 using Documents_backend.Utility;
-using Documents_backend.Models;
 
+using Documents_Entities.DTO;
+using Documents_Entities.Entities;
+using Documents_Entities.POST;
 
 namespace Documents_backend.Controllers
 {
@@ -68,7 +70,7 @@ namespace Documents_backend.Controllers
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] Models.POST.DocumentPOST body)
+        public int Post([FromBody] DocumentPOST body)
         {
             Template template = db.Templates.Find(body.TemplateId);
             if (template == null)
@@ -77,7 +79,7 @@ namespace Documents_backend.Controllers
             var user = db.Users.FirstOrDefault();
             if (user == null)
             {
-                user = db.Users.Add(Models.User.CreateAdmin());
+                user = db.Users.Add(Documents_Entities.Entities.User.CreateAdmin());
                 user.PositionId = 4;
                 db.SaveChanges();
             }
