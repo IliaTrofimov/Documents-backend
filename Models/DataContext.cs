@@ -1,10 +1,11 @@
-using System.Collections.Generic;
+using Documents_Entities.Entities;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 
-namespace Documents_backend.Models
+
+namespace Documents_backend
 {
     public partial class DataContext : DbContext
     {
@@ -17,7 +18,6 @@ namespace Documents_backend.Models
         public virtual DbSet<TemplateType> TemplateTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
-        public virtual DbSet<TemplateTypePosition> TemplateTypePositions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
