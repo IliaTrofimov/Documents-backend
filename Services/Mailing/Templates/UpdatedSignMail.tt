@@ -1,0 +1,10 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+
+<html><body>
+<strong>Новый статус документа</strong><br>
+Уважаемый <#= InitiatorFirstname #> <#= InitiatorFathersname #>!<br>
+Подписант <#= SignerShortname #> <#= Message #> Ваш документ <a href='<#= BaseUrl #>/documents/<#= DocumentId #>'><#= DocumentName #></a>. 
+Вы можете, проверить статус документа в <a href='<#= BaseUrl #>/home'>личном кабинете</a>.<br><br>
+<small>Это письмо было создано автоматически, не нужно на него отвечать.</small>
+</body></html>

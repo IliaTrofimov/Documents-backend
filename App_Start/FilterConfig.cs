@@ -1,7 +1,7 @@
-﻿using Documents_backend.Handlers;
+﻿using Documents.Handlers;
 using System.Web.Mvc;
 
-namespace Documents_backend
+namespace Documents
 {
     public class FilterConfig
     {

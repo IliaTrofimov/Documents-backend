@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Documents_backend.Handlers
+namespace Documents.Handlers
 {
     public abstract class MessageHandler : DelegatingHandler
     {

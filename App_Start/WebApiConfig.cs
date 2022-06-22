@@ -2,7 +2,7 @@
 using System.Web.Http;
 
 
-namespace Documents_backend
+namespace Documents
 {
     public static class WebApiConfig
     {

@@ -4,11 +4,11 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 
-using Documents_Entities.DTO;
-using Documents_Entities.Entities;
+using Documents.DTO;
+using Documents.Entities;
 
 
-namespace Documents_backend
+namespace Documents
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

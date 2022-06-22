@@ -5,10 +5,10 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
 
-using Documents_backend.Utility;
-using Documents_Entities.Entities;
+using Documents.Utility;
+using Documents.Entities;
 
-namespace Documents_backend.Controllers
+namespace Documents.Controllers
 {
     [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class TemplateTypesController : ApiController

@@ -1,11 +1,12 @@
-using Documents_Entities.Entities;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 
+using Documents.Models.Entities;
 
-namespace Documents_backend
+
+namespace Documents.Models
 {
     public partial class DataContext : DbContext
     {
