@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Documents.Services.Mailing.Templates
+namespace Documents.Services.MailTemplates
 {
     partial class ExpireMail
     {

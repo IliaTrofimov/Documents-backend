@@ -8,9 +8,9 @@ namespace Documents.Controllers
     {
         [HttpGet]
         [ActionName("index")]
-        public string Index()
+        public void Index()
         {
-            return "Done";
+            Ok("Server is running");
         }
     }
 }

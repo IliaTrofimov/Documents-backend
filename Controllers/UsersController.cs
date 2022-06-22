@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http.Description;
 using System.Data.Entity;
 
 using Documents.Utility;
@@ -21,9 +23,11 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("count")]
-        public int Count(int position = -1)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Count(int position = -1)
         {
-            return db.Users.Count(user => position == -1 || user.PositionId == position);
+            int count = await db.Users.CountAsync(user => position == -1 || user.PositionId == position);
+            return Ok(count);
         }
 
 
@@ -43,47 +47,52 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<UserDTO> Get(int page = 0, int pageSize = -1, int position = -1, int permissions = -1)
+        [ResponseType(typeof(List<User>))]
+        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1, int position = -1, int permissions = -1)
         {
-            IQueryable<User> users;
+            List<User> users;
             if (pageSize != -1)
-                users = db.Users.Include(user => user.Position)
+                users = await db.Users.Include(user => user.Position)
                     .OrderBy(user => user.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize)
-                    .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions));
-            else
-                users = db.Users.Include(user => user.Position)
+                    .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions))
+                    .ToListAsync();
+            else 
+                users = await db.Users.Include(user => user.Position)
                    .OrderBy(user => user.Id)
-                   .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions));
+                   .Where(user => (position == -1 || user.PositionId == position) && (permissions == -1 || user.Permissions == permissions))
+                   .ToListAsync();
 
             if (users == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
       
-            return mapper.Map<IEnumerable<UserDTO>>(users);
+            return Ok(mapper.Map<IEnumerable<UserDTO>>(users));
         }
 
         [HttpGet]
         [ActionName("get")]
-        public UserDTORich Get(int id)
+        [ResponseType(typeof(UserDTORich))]
+        public async Task<IHttpActionResult> Get(int id)
         {
-            User user = db.Users
+            User user = await db.Users
                 .Include(_user => _user.Position)
                 .Include(_user => _user.Documents)
                 .Include(_user => _user.Templates)
                 .Include(_user => _user.Signs)
-                .FirstOrDefault(_user => _user.Id == id);
+                .FirstOrDefaultAsync(_user => _user.Id == id);
 
             if (user == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             
-            return mapper.Map<UserDTORich>(user);
+            return Ok(mapper.Map<UserDTORich>(user));
         }
 
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] UserDTO user)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Post([FromBody] UserDTO user)
         {
             User newUser = db.Users.Add(new User()
             {
@@ -94,16 +103,17 @@ namespace Documents.Controllers
                 Permissions = user.Permissions,
                 Email = user.Email
             }) ;
-            db.SaveChanges();
-            return newUser.Id;
+            await db.SaveChangesAsync();
+            return Ok(newUser.Id);
         }
 
 
         [HttpPut]
         [ActionName("put")]
-        public UserDTO Put(int id, [FromBody] UserDTO user)
+        [ResponseType(typeof(UserDTO))]
+        public async Task<IHttpActionResult> Put(int id, [FromBody] UserDTO user)
         {
-            User found = db.Users.Find(id); 
+            User found = await db.Users.FindAsync(id); 
             if (found == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update user, user not found");
 
@@ -114,24 +124,26 @@ namespace Documents.Controllers
             found.PositionId = user.PositionId;
             found.Email = user.Email;
 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             db.Entry(found).Reference("Position").Load();
-            return mapper.Map<UserDTO>(found);
+            return Ok(mapper.Map<UserDTO>(found));
         }
 
 
         [HttpDelete]
         [ActionName("delete")]
-        public void Delete(int id)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Delete(int id)
         {
             User user = db.Users.Find(id);
             if (user != null)
             {
                 db.Users.Remove(user);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                return Ok();
             }   
             else
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete user, user not found");
+               return NotFound();
         }
 
         protected override void Dispose(bool disposing)

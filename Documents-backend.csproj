@@ -233,10 +233,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202206201735468_init.cs" />
-    <Compile Include="Migrations\202206201735468_init.designer.cs">
-      <DependentUpon>202206201735468_init.cs</DependentUpon>
+    <Compile Include="Migrations\202206221425588_init.cs" />
+    <Compile Include="Migrations\202206221425588_init.designer.cs">
+      <DependentUpon>202206221425588_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Administrative\UserPermission.cs" />
     <Compile Include="Models\DTO\DocumentDataItemDTO.cs" />
     <Compile Include="Models\DTO\DocumentDTO.cs" />
@@ -283,8 +284,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Services\Mailing\Templates\UpdatedSignMailData.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ControllerExtentions.cs" />
@@ -327,8 +328,8 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202206201735468_init.resx">
-      <DependentUpon>202206201735468_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202206221425588_init.resx">
+      <DependentUpon>202206221425588_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

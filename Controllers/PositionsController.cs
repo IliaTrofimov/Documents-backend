@@ -3,6 +3,9 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http.Description;
+using System.Data.Entity;
 
 using Documents.Utility;
 using Documents.Models.Entities;
@@ -17,80 +20,88 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("count")]
-        public int Count()
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Count()
         {
-            return db.Positions.Count();
+            int count = await db.Positions.CountAsync();
+            return Ok(count);
         }
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<Position> Get(int page = 0, int pageSize = -1)
+        [ResponseType(typeof(List<Position>))]
+        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1)
         {
-            IQueryable<Position> postions;
+            List<Position> postions;
             if (pageSize != -1)
-                postions = db.Positions.OrderBy(pos => pos.Id)
+                postions = await db.Positions.OrderBy(pos => pos.Id)
                     .Skip(page * pageSize)
-                    .Take(pageSize);
+                    .Take(pageSize).ToListAsync();
             else
-                postions = db.Positions;
+                postions = await db.Positions.ToListAsync();
 
             if (postions == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-            return postions.ToList();
+            return Ok(postions);
         }
 
         [HttpGet]
         [ActionName("get")]
-        public Position Get(int id)
+        [ResponseType(typeof(Position))]
+        public async Task<IHttpActionResult> Get(int id)
         {
-            Position group = db.Positions.Find(id);
-            if (group == null)
+            Position position = await db.Positions.FindAsync(id);
+            if (position == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            return group;
+            return Ok(position);
         }
 
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] Position body)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Post([FromBody] Position body)
         {
             if (body == null)
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Empty POST request");
 
             Position pos = db.Positions.Add(new Position() { Name = body.Name });
-            db.SaveChanges();
-            return pos.Id;
+            await db.SaveChangesAsync();
+            return Ok(pos.Id);
         }
 
 
         [HttpPut]
         [ActionName("put")]
-        public Position Put(int id, [FromBody] Position body)
+        [ResponseType(typeof(Position))]
+        public async Task<IHttpActionResult> Put(int id, [FromBody] Position body)
         {
             if (body == null)
                 this.ThrowResponseException(HttpStatusCode.BadRequest, "Empty POST request");
 
-            Position pos = db.Positions.Find(id);
+            Position pos = await db.Positions.FindAsync(id);
 
             if (pos == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update position, position not found");
 
             pos.Name = body.Name;
-            db.SaveChanges();
-            return pos;
+            await db.SaveChangesAsync();
+            return Ok(pos);
         }
 
         [HttpDelete]
         [ActionName("delete")]
-        public void Delete(int id)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Delete(int id)
         {
             Position pos = db.Positions.Find(id);
             if (pos != null)
             {
                 db.Positions.Remove(pos);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete position, position not found");
+            else return NotFound();
         }
 
         protected override void Dispose(bool disposing)

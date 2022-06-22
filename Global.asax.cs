@@ -6,18 +6,16 @@ using System.Web.Mvc;
 
 using Documents.Models.DTO;
 using Documents.Models.Entities;
-using Documents.Migrations;
 using Documents.Models;
-
+using Documents.Properties;
 
 namespace Documents
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         static public MapperConfiguration mapperConfig;
-
         protected void Application_Start()
-        { 
+        {
             mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Document, DocumentDTO>()
@@ -43,7 +41,7 @@ namespace Documents
             var mapper = mapperConfig.CreateMapper();
 
 
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Migrations.Configuration>());
+           // Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Migrations.Configuration>());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

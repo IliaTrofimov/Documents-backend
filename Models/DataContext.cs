@@ -31,15 +31,6 @@ namespace Documents.Models
                 .Map<TemplateField>(m => m.Requires("IsTable").HasValue(false))
                 .Map<TemplateTable>(m => m.Requires("IsTable").HasValue(true));
 
-            modelBuilder.Entity<TemplateItem>()
-                .HasRequired(t => t.Template)
-                .WithMany()
-                .WillCascadeOnDelete(true);
-
-            modelBuilder.Entity<DocumentDataItem>()
-                .HasRequired(i => i.Document)
-                .WithMany()
-                .WillCascadeOnDelete(true);
         }
     }
 }

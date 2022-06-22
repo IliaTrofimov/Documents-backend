@@ -5,11 +5,11 @@ using MailKit.Net.Smtp;
 using MimeKit;
 
 using Documents.Models.Entities;
-using Documents.Services.Mailing.Templates;
+using Documents.Services.MailTemplates;
 using Documents.Properties;
 
 
-namespace Documents.Services.Mailing
+namespace Documents.Services
 {
     public abstract class Mailing
     {

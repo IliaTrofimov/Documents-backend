@@ -7,7 +7,7 @@
 //     повторного создания кода.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Documents.Services.Mailing.Templates
+namespace Documents.Services.MailTemplates
 {
     using System;
     
