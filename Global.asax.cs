@@ -15,7 +15,7 @@ namespace Documents_backend
         static public MapperConfiguration mapperConfig;
 
         protected void Application_Start()
-        {
+        { 
             mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Document, DocumentDTO>()

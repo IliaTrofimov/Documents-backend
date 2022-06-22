@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using System.Net;
 using System.Linq;
 using System.Web.Http;
@@ -59,14 +60,23 @@ namespace Documents_backend.Controllers
 
         [HttpPost]
         [ActionName("post")]
-        public void Post([FromBody] SignPOST body)
+        public void Post([FromBody] Sign body)
         {
             if (db.Users.Find(body.UserId) == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot create signatory, signer not found");
             if (db.Documents.Find(body.DocumentId) == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot create signatory, document not found");
 
-            db.Signs.Add(new Sign() { UserId = body.UserId, DocumentId = body.DocumentId, CreateDate = System.DateTime.Now });
+            db.Signs.Add(new Sign() 
+            { 
+                UserId = body.UserId, 
+                DocumentId = body.DocumentId, 
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                SignerPositionId = body.SignerPositionId,
+                Signed = null,
+                InitiatorId = body.InitiatorId
+            });
             db.SaveChanges();
         }
 
@@ -79,8 +89,9 @@ namespace Documents_backend.Controllers
             if (sign == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update signatory, signatory not found");
 
+            Documents_notifications.Mailing.SignatoryNotification(sign);
             sign.Signed = body.Signed;
-            sign.UpdateDate = System.DateTime.Now;
+            sign.UpdateDate = DateTime.Now;
             db.SaveChanges();
         }
 
