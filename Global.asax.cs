@@ -4,8 +4,10 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 
-using Documents.DTO;
-using Documents.Entities;
+using Documents.Models.DTO;
+using Documents.Models.Entities;
+using Documents.Migrations;
+using Documents.Models;
 
 
 namespace Documents

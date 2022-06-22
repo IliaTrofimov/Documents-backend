@@ -1,4 +1,4 @@
-using Documents.Entities;
+using Documents.Models.Entities;
 using System.Collections.Generic;
 
 namespace Documents.Models.DTO

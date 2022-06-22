@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 
 using Documents.Utility;
-using Documents.DTO;
-using Documents.Entities;
+using Documents.Models.DTO;
+using Documents.Models.Entities;
+using Documents.Models;
 
 namespace Documents.Controllers
 {
@@ -33,7 +34,7 @@ namespace Documents.Controllers
             var user = db.Users.Include("Position").FirstOrDefault();
             if (user == null)
             {
-                user = db.Users.Add(Documents.Entities.User.CreateAdmin());
+                user = db.Users.Add(Models.Entities.User.CreateAdmin());
                 user.PositionId = 4;
                 db.SaveChanges();
             }

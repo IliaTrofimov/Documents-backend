@@ -1,4 +1,4 @@
-using Documents.Entities;
+using Documents.Models.Entities;
 
 namespace Documents.Models.DTO
 {
