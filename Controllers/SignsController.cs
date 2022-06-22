@@ -6,12 +6,13 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
 
-using Documents_backend.Utility;
-using Documents_Entities.DTO;
-using Documents_Entities.Entities;
-using Documents_Entities.POST;
+using Documents.Utility;
+using Documents.Models.DTO;
+using Documents.Models.Entities;
+using Documents.Models.POST;
+using Documents.Models;
 
-namespace Documents_backend.Controllers
+namespace Documents.Controllers
 {
     [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class SignsController : ApiController
@@ -89,7 +90,7 @@ namespace Documents_backend.Controllers
             if (sign == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update signatory, signatory not found");
 
-            Documents_notifications.Mailing.SignatoryNotification(sign);
+            //Documents_notifications.Mailing.SignatoryNotification(sign);
             sign.Signed = body.Signed;
             sign.UpdateDate = DateTime.Now;
             db.SaveChanges();

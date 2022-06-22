@@ -1,0 +1,10 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+
+<html><body>
+<strong>Визирование</strong><br>
+Уважаемый <#= SignerFirstname #> <#= SignerFathersname #>!<br>
+Сотрудник <#= InitiatorShortname #> запросил Вашу подпись для документа <a href='<#= BaseUrl #>/documents/<#= DocumentId #>'><#= DocumentName #></a>. 
+Пожалуйста, проверьте статус документа в <a href='<#= BaseUrl #>/home'>личном кабинете</a>.<br><br>
+<small>Это письмо было создано автоматически, не нужно на него отвечать.</small>
+</body></html>

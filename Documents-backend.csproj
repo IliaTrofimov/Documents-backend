@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Documents_backend</RootNamespace>
+    <RootNamespace>Documents</RootNamespace>
     <AssemblyName>Documents-backend</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
@@ -53,11 +53,17 @@
     <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="MailKit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
+      <HintPath>packages\MailKit.3.3.0\lib\net462\MailKit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.OData, Version=7.5.14.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.AspNet.OData.7.5.14\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
@@ -93,6 +99,9 @@
     <Reference Include="Microsoft.Spatial, Version=7.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Spatial.7.10.0\lib\net45\Microsoft.Spatial.dll</HintPath>
     </Reference>
+    <Reference Include="MimeKit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>packages\MimeKit.3.3.0\lib\net462\MimeKit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -116,6 +125,9 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\System.Spatial.5.6.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encoding.CodePages.4.5.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Encodings.Web, Version=4.0.5.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Text.Encodings.Web.4.7.2\lib\net461\System.Text.Encodings.Web.dll</HintPath>
@@ -211,6 +223,7 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\PositionsController.cs" />
     <Compile Include="Controllers\SignsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -224,11 +237,52 @@
     <Compile Include="Migrations\202206201735468_init.designer.cs">
       <DependentUpon>202206201735468_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Administrative\UserPermission.cs" />
+    <Compile Include="Models\DTO\DocumentDataItemDTO.cs" />
+    <Compile Include="Models\DTO\DocumentDTO.cs" />
+    <Compile Include="Models\DTO\DocumentTableCellDTO.cs" />
+    <Compile Include="Models\DTO\SignDTO.cs" />
+    <Compile Include="Models\DTO\TemplateDTO.cs" />
+    <Compile Include="Models\DTO\TemplateTypeDTO.cs" />
+    <Compile Include="Models\DTO\UserDTO.cs" />
+    <Compile Include="Models\DTO\UserDTO_Rich.cs" />
+    <Compile Include="Models\Entities\Document.cs" />
+    <Compile Include="Models\Entities\DocumentDataItem.cs" />
+    <Compile Include="Models\Entities\Position.cs" />
+    <Compile Include="Models\Entities\Sign.cs" />
+    <Compile Include="Models\Entities\Template.cs" />
+    <Compile Include="Models\Entities\TemplateField.cs" />
+    <Compile Include="Models\Entities\TemplateItem.cs" />
+    <Compile Include="Models\Entities\TemplateTable.cs" />
+    <Compile Include="Models\Entities\TemplateType.cs" />
+    <Compile Include="Models\Entities\User.cs" />
+    <Compile Include="Models\POST\DocumentPOST.cs" />
+    <Compile Include="Models\POST\ItemMovementPOST.cs" />
+    <Compile Include="Models\POST\SignPOST.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\Mailing\Mailing.cs" />
+    <Compile Include="Services\Mailing\Templates\ExpireMail1.cs">
+      <DependentUpon>ExpireMail.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Services\Mailing\Templates\ExpireMailData.cs" />
+    <Compile Include="Services\Mailing\Templates\NewSignMail1.cs">
+      <DependentUpon>NewSignMail.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Services\Mailing\Templates\NewSignMailData.cs" />
+    <Compile Include="Services\Mailing\Templates\UpdatedSignMail1.cs">
+      <DependentUpon>UpdatedSignMail.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Services\Mailing\Templates\UpdatedSignMailData.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DataContext.cs" />
@@ -238,6 +292,18 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="Global.asax" />
+    <Content Include="Services\Mailing\Templates\ExpireMail.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ExpireMail1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Services\Mailing\Templates\NewSignMail.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>NewSignMail1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Services\Mailing\Templates\UpdatedSignMail.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>UpdatedSignMail1.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -256,16 +322,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Documents-Entities\Documents-entities.csproj">
-      <Project>{2157a828-d4a5-45f5-a17a-870892e50116}</Project>
-      <Name>Documents-entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Documents-notifications\Documents-notifications.csproj">
-      <Project>{83606E56-47FE-4248-9EF4-9F71C868AA08}</Project>
-      <Name>Documents-notifications</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

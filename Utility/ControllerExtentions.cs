@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Documents_backend.Utility
+namespace Documents.Utility
 {
     public static class ControllerExtentions
     {

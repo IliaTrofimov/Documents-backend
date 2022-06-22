@@ -5,12 +5,12 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
 
-using Documents_backend.Utility;
-using Documents_Entities.Entities;
-using Documents_Entities.POST;
-using Documents_Entities.DTO;
+using Documents.Utility;
+using Documents.Entities;
+using Documents.POST;
+using Documents.DTO;
 
-namespace Documents_backend.Controllers
+namespace Documents.Controllers
 {
     [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class TemplatesController : ApiController
@@ -155,7 +155,7 @@ namespace Documents_backend.Controllers
             var user = db.Users.FirstOrDefault();
             if (user == null)
             {
-                user = db.Users.Add(Documents_Entities.Entities.User.CreateAdmin());
+                user = db.Users.Add(Documents.Entities.User.CreateAdmin());
                 user.PositionId = 4;
                 db.SaveChanges();
             }

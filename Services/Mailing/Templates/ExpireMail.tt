@@ -1,0 +1,13 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+
+
+<html><body>
+<strong>Напоминание</strong><br>
+Уважаемый <#= Firstname #> <#= Fathersname #>!<br>
+Срок действия вашего документа <a href='<#= BaseUrl #>/documents/<#= DocumentId #>'><#= DocumentName #></a> 
+<#= Expire <= DateTime.Now ? " уже истёк " : " истекает через " + (Expire.Value.Date - DateTime.Now.Date).Days + " дней " #> 
+(дата истечения <#= Expire.Value.ToString("d") #>). 
+Пожалуйста, проверьте статус документа в <a href='<#= BaseUrl #>/home'>личном кабинете</a>.<br><br>
+<small>Это письмо было создано автоматически, не нужно на него отвечать.</small>
+</body></html>
