@@ -20,19 +20,19 @@ namespace Documents
 
             config.Routes.MapHttpRoute(
                name: "action",
-               routeTemplate: "api/{controller}/{action}",
+               routeTemplate: "{controller}/{action}",
                defaults: new { action = "list", controller = "default" }
-           );
+            );
 
             config.Routes.MapHttpRoute(
                 name: "id-action",
-                routeTemplate: "api/{controller}/{id}/{action}",
+                routeTemplate: "{controller}/{id}/{action}",
                 defaults: new { id = RouteParameter.Optional, action = "list" }
             );
 
             config.Routes.MapHttpRoute(
                 name: "id-action-id",
-                routeTemplate: "api/{controller}/{id}/{action}/{childId}"
+                routeTemplate: "{controller}/{id}/{action}/{childId}"
             );
         }
     }

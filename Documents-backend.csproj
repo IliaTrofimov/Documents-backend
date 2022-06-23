@@ -375,6 +375,7 @@
   <PropertyGroup>
     <PostBuildEvent>@echo off
 
+copy /y NUL $(TargetDir)BuildInfo.txt
 set _time=%25TIME:~0,2%25:%25TIME:~3,2%25:%25TIME:~6,2%25
 echo build: %25DATE%25  %25_time%25 &gt;&gt; $(TargetDir)BuildInfo.txt
 echo Build time %25DATE%25 %25_time%25 - build info at $(TargetDir)BuildInfo.txt</PostBuildEvent>

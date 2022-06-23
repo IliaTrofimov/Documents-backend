@@ -10,24 +10,17 @@ namespace Documents.Controllers
     [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
     public class DefaultController : ApiController
     {
-        public class BuildData
-        {
-            public string Message { get; set; }
-            public string ReqstTime { get; set; }
-            public string BuildTime { get; set; }
-        }
-
         [HttpGet]
         [ActionName("list")]
         public Dictionary<string, string> BuildInfo()
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             result.Add("Message", "Server is running");
-            result.Add("Reqst-Time", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
+            result.Add("ReqstTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
 
             try
             {
-                result.Add("Build-Date", DateTime.Parse(
+                result.Add("BuildDate", DateTime.Parse(
                     File.ReadLines(@"C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-backend\bin\BuildInfo.txt")
                    .Last()
                    .Substring(6).TrimEnd()
@@ -35,7 +28,7 @@ namespace Documents.Controllers
             }
             catch (Exception e)
             {
-                result.Add("Build-Date", "unknown");
+                result.Add("BuildDate", "unknown");
                 result["Message"] += $". Cannot get build time ({e.Message})";
             }
             return result;
@@ -47,7 +40,7 @@ namespace Documents.Controllers
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             Models.DataContext db = new Models.DataContext();
-            result.Add("Build-Date", BuildInfo()["Build-Date"]);
+            result.Add("BuildDate", BuildInfo()["BuildDate"]);
             
             try
             {
@@ -111,7 +104,6 @@ namespace Documents.Controllers
                 result.Add("Signs", "ok");
             }
             catch (Exception e) { result.Add("Signs", e.Message); }
-
             return result;
         }
     }
