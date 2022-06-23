@@ -16,7 +16,7 @@ namespace Documents.Controllers
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             result.Add("Message", "Server is running");
-            result.Add("ReqstTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
+            result.Add("RequestTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
 
             try
             {
@@ -104,6 +104,16 @@ namespace Documents.Controllers
                 result.Add("Signs", "ok");
             }
             catch (Exception e) { result.Add("Signs", e.Message); }
+            return result;
+        }
+
+        [HttpGet]
+        [ActionName("user")]
+        public Dictionary<string, string> GetUser()
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            result.Add("Name", User.Identity.Name);
+            result.Add("AuthType", User.Identity.AuthenticationType);
             return result;
         }
     }
