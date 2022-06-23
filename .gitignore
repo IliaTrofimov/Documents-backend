@@ -400,3 +400,4 @@ FodyWeavers.xsd
 /Migrations/202205231618217_dataitem.cs
 /Migrations/202205231618217_dataitem.Designer.cs
 /Migrations
+/BuildInfo.txt
