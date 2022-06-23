@@ -292,7 +292,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="BuildInfo.txt" />
     <Content Include="Global.asax" />
     <Content Include="Services\Mailing\Templates\ExpireMail.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
@@ -319,7 +318,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -327,6 +325,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202206221425588_init.resx">
@@ -338,7 +337,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
