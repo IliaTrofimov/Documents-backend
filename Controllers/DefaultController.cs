@@ -16,6 +16,8 @@ namespace Documents.Controllers
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             result.Add("Message", "Server is running");
+            result.Add("StartupTime", StartupInfo.StartupTime.ToString("H:mm:ss - dd MMM. yyy"));
+            result.Add("Counter", StartupInfo.Counter.ToString());
             result.Add("RequestTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
 
             try
@@ -109,12 +111,9 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("user")]
-        public Dictionary<string, string> GetUser()
+        public System.Security.Principal.IPrincipal GetUser()
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            result.Add("Name", User.Identity.Name);
-            result.Add("AuthType", User.Identity.AuthenticationType);
-            return result;
+            return User;
         }
     }
 }

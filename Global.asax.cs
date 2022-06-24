@@ -7,15 +7,24 @@ using System.Web.Mvc;
 using Documents.Models.DTO;
 using Documents.Models.Entities;
 using Documents.Models;
-using Documents.Properties;
+using Documents.Services.MailingSchedule;
 
 namespace Documents
 {
+    public static class StartupInfo
+    {
+        public static System.DateTime StartupTime;
+        public static int Counter = 0;
+    }
+
     public class WebApiApplication : HttpApplication
     {
         static public MapperConfiguration mapperConfig;
+
         protected void Application_Start()
         {
+            StartupInfo.StartupTime = System.DateTime.Now;
+
             mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Document, DocumentDTO>()

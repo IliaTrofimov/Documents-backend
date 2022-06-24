@@ -7,7 +7,7 @@ using MimeKit;
 using Documents.Models.Entities;
 using Documents.Services.MailTemplates;
 using Documents.Properties;
-
+using System.Threading.Tasks;
 
 namespace Documents.Services
 {
@@ -53,29 +53,10 @@ namespace Documents.Services
             }
         }
 
-        public static void Test(string text = "test message", string subject = "Test")
-        {
-            using (var client = new SmtpClient())
-            {
-                client.Connect(EmailHost, EmailPort, true);
-                client.Authenticate(EmailLogin, EmailPassword);
-
-                MimeMessage message = new MimeMessage();
-                message.From.Add(new MailboxAddress(EmailFrom, Settings.Default.EmailLogin));
-                message.Subject = subject;
-
-                message.To.Add(new MailboxAddress("Илья Трофимов", Settings.Default.EmailLogin));
-                message.Body = new TextPart("plain") { Text = text };
-
-                client.SendAsync(message).Start();
-                client.Disconnect(true);
-            }
-        }
-
 
         /// <summary> Рассылает владельцам документов уведомления с указанием даты истечения срока действия документа </summary>
         /// <returns> Количество успешно отправленных писем </returns>
-        public static int ExpireNotification(IEnumerable<Document> documents)
+        public static async Task<int> ExpireNotification(IEnumerable<Document> documents)
         {
             int count = 0;
 
@@ -97,7 +78,7 @@ namespace Documents.Services
 
                         try
                         {
-                            client.SendAsync(message).Start();
+                            await client.SendAsync(message);
                             count++;
                         }
                         catch (Exception) { }
