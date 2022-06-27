@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Documents.Models.DTO;
 using Documents.Models.Entities;
 using Documents.Models;
+using Documents.Properties;
 using Documents.Services.MailingSchedule;
 
 namespace Documents
@@ -15,6 +16,8 @@ namespace Documents
     {
         public static System.DateTime StartupTime;
         public static int Counter = 0;
+        public static string Msg;
+        public static int Tries = 0;
     }
 
     public class WebApiApplication : HttpApplication
@@ -35,8 +38,6 @@ namespace Documents
                 cfg.CreateMap<Template, TemplateDTO>()
                     .ForMember(dto => dto.TemplateType, act => act.MapFrom(temp => temp.TemplateType.Name));
                 cfg.CreateMap<TemplateType, TemplateTypeDTO>();
-
-                cfg.CreateMap<User, UserDTORich>();
                 cfg.CreateMap<User, UserDTO>();
 
                 cfg.CreateMap<Sign, SignDTO>()
@@ -50,10 +51,16 @@ namespace Documents
             var mapper = mapperConfig.CreateMapper();
 
 
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Migrations.Configuration>());
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataContext, Migrations.Configuration>());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+            Services.Mailing mailing = new Services.Mailing(Settings.Default.EmailFrom,
+                Settings.Default.EmailLogin, 
+                Settings.Default.EmailPassword,
+                Settings.Default.EmailHost);
+            EmailScheduler.Start();
         }
 
         void Application_BeginRequest(object sender, System.EventArgs e)
@@ -61,7 +68,7 @@ namespace Documents
             var context = HttpContext.Current;
             var response = context.Response;
 
-            if (context.Request.HttpMethod == "OPTIONS")
+            if (false && context.Request.HttpMethod == "OPTIONS")
             {
                 response.AddHeader("Access-Control-Allow-Origin", "http://localhost:4200");
                 response.AddHeader("X-Frame-Options", "ALLOW-FROM *");

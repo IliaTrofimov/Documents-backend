@@ -7,25 +7,31 @@ namespace Documents.Models.Entities
     public class Sign
     {
         [Key]
-        [Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
         public int DocumentId { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public bool? Signed { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual Document Document { get; set; }
 
+        [NotMapped]
+        public string DocumentName => Document.Name;
+
         [Newtonsoft.Json.JsonIgnore]
         public virtual User User { get; set; }
 
+        [NotMapped]
+        public string SignerShortname => User.GetFIO();
+
         [Required]
         public int SignerPositionId { get; set; }
+
         public virtual Position SignerPosition { get; set; }
 
         [Required]
@@ -33,6 +39,9 @@ namespace Documents.Models.Entities
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual User Initiator { get; set; }
+
+        [NotMapped]
+        public string InitiatorShortname => Initiator.GetFIO();
 
         [Required]
         public System.DateTime UpdateDate { get; set; }

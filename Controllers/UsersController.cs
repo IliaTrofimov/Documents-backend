@@ -72,20 +72,17 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("get")]
-        [ResponseType(typeof(UserDTORich))]
+        [ResponseType(typeof(UserDTO))]
         public async Task<IHttpActionResult> Get(int id)
         {
             User user = await db.Users
                 .Include(_user => _user.Position)
-                .Include(_user => _user.Documents)
-                .Include(_user => _user.Templates)
-                .Include(_user => _user.Signs)
                 .FirstOrDefaultAsync(_user => _user.Id == id);
 
             if (user == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             
-            return Ok(mapper.Map<UserDTORich>(user));
+            return Ok(mapper.Map<UserDTO>(user));
         }
 
 

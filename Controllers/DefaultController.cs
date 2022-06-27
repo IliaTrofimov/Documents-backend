@@ -19,6 +19,8 @@ namespace Documents.Controllers
             result.Add("StartupTime", StartupInfo.StartupTime.ToString("H:mm:ss - dd MMM. yyy"));
             result.Add("Counter", StartupInfo.Counter.ToString());
             result.Add("RequestTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
+            result.Add("Tries", StartupInfo.Tries.ToString());
+            result.Add("Msg", StartupInfo.Msg);
 
             try
             {

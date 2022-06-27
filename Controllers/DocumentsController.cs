@@ -28,7 +28,7 @@ namespace Documents.Controllers
         public async Task<IHttpActionResult> Count(int template = -1, int user = -1, int type = -1)
         {
             int count = await db.Documents.CountAsync(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
-                        (template != -1 || d.TemplateId == template));
+                        (template == -1 || d.TemplateId == template));
             return Ok(count);
         }
 
@@ -80,7 +80,7 @@ namespace Documents.Controllers
         [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> Post([FromBody] DocumentPOST body)
         {
-            Template template = db.Templates.Find(body.TemplateId);
+            Template template = await db.Templates.Include("TemplateType.Positions").FirstOrDefaultAsync(t => t.Id == body.TemplateId);
             if (template == null)
                 BadRequest("Cannot create document from template, template not found");
 
@@ -97,9 +97,13 @@ namespace Documents.Controllers
                 TemplateId = body.TemplateId,
                 UpdateDate = System.DateTime.Now,
                 AuthorId = user.Id,
-                Name = body.Name
+                Name = body.Name,
+                Type = 0
             });
             await db.SaveChangesAsync();
+
+            foreach (var pos in template.TemplateType.Positions)
+                db.Signs.Add(new Sign() { DocumentId = document.Id, InitiatorId = document.Author.Id, UpdateDate = System.DateTime.Now, CreateDate = System.DateTime.Now, SignerPositionId = user.PositionId });
 
             foreach (var item in template.TemplateItems)
             {

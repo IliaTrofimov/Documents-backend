@@ -23,111 +23,84 @@ namespace Documents.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("465")]
         public int EmailPort {
             get {
                 return ((int)(this["EmailPort"]));
             }
-            set {
-                this["EmailPort"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("smtp.yandex.ru")]
         public string EmailHost {
             get {
                 return ((string)(this["EmailHost"]));
             }
-            set {
-                this["EmailHost"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("edcrfvA486")]
+        [global::System.Configuration.DefaultSettingValueAttribute("olrogpgfrfhetfpm")]
         public string EmailPassword {
             get {
                 return ((string)(this["EmailPassword"]));
             }
-            set {
-                this["EmailPassword"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ilia.trofimov2014@yandex.ru")]
-        public string EmailLogin {
+        public string EmailFrom {
             get {
-                return ((string)(this["EmailLogin"]));
-            }
-            set {
-                this["EmailLogin"] = value;
+                return ((string)(this["EmailFrom"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\iliat\\Source\\Repos\\IliaTrofimov\\Documents-backend\\App_Data")]
         public string DataDirectory {
             get {
                 return ((string)(this["DataDirectory"]));
             }
-            set {
-                this["DataDirectory"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("my_notifications")]
-        public string EmailFrom {
+        public string EmailFromName {
             get {
-                return ((string)(this["EmailFrom"]));
-            }
-            set {
-                this["EmailFrom"] = value;
+                return ((string)(this["EmailFromName"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("olrogpgfrfhetfpm")]
-        public string YandexPassword {
-            get {
-                return ((string)(this["YandexPassword"]));
-            }
-            set {
-                this["YandexPassword"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ilia.trofimov2014")]
-        public string YandexLogin {
+        public string EmailLogin {
             get {
-                return ((string)(this["YandexLogin"]));
-            }
-            set {
-                this["YandexLogin"] = value;
+                return ((string)(this["EmailLogin"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:4200")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:80/frontend")]
         public string BaseUrl {
             get {
                 return ((string)(this["BaseUrl"]));
             }
-            set {
-                this["BaseUrl"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int ExpireSpamPeriodSeconds {
+            get {
+                return ((int)(this["ExpireSpamPeriodSeconds"]));
             }
         }
     }
