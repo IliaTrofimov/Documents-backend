@@ -5,12 +5,17 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http.Description;
+using System.Data.Entity;
 
 using Documents.Utility;
 using Documents.Models.DTO;
 using Documents.Models.Entities;
 using Documents.Models.POST;
 using Documents.Models;
+using Documents.Services;
+
 
 namespace Documents.Controllers
 {
@@ -19,56 +24,65 @@ namespace Documents.Controllers
     {
         DataContext db = new DataContext();
         Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
+        Mailing mailing = new Mailing();
+
 
         [HttpGet]
         [ActionName("count")]
-        public int Count(int documentId = -1, int userId = -1)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Count(int documentId = -1, int userId = -1, int initiatorId = -1)
         {
-            return db.Signs.Count(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
+            int count =  await db.Signs.CountAsync(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId) && (initiatorId == -1 || sign.InitiatorId == initiatorId));
+            return Ok(count);
         }
 
         [HttpGet]
         [ActionName("get")]
-        public IEnumerable<SignDTO> Get(int documentId = -1, int userId = -1, int page = 0, int pageSize = -1)
+        [ResponseType(typeof(Sign))]
+        public async Task<IHttpActionResult> Get(int id)
         {
-            if (documentId == -1 && userId == -1)
-                this.ThrowResponseException(HttpStatusCode.BadRequest, "Cannot find signatory, document or user were not specified");
-            if (documentId != -1 && userId != -1)
-            {
-                var sign = db.Signs.FirstOrDefault(s => s.DocumentId == documentId && s.UserId == userId);
-                if (sign == null)
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                return mapper.Map<IEnumerable<SignDTO>>(new Sign[]{ sign });
-            }
+            var sign = await db.Signs.Include("User").Include("Initiator").FirstOrDefaultAsync(s => s.Id == id);
+            if (sign == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            return Ok(sign);
+        }
+
+        [HttpGet]
+        [ActionName("list")]
+        [ResponseType(typeof(IEnumerable<Sign>))]
+        public async Task<IHttpActionResult> List(int documentId = -1, int userId = -1, int page = 0, int pageSize = -1, int initiatorId = -1)
+        {
+            List<Sign> signs;
+            if (pageSize != -1)
+                signs = await db.Signs.Include("Initiator").Include("User")
+                    .OrderBy(sign => sign.SignerPositionId)
+                    .Skip(page * pageSize)
+                    .Take(pageSize)
+                    .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId) && (initiatorId == -1 || sign.InitiatorId == initiatorId))
+                    .ToListAsync();
             else
-            {
-                IQueryable<Sign> signs;
-                if (pageSize != -1)
-                    signs = db.Signs.OrderBy(sign => sign.SignerPositionId)
-                        .Skip(page * pageSize)
-                        .Take(pageSize)
-                        .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
-                else
-                    signs = db.Signs.OrderBy(sign => sign.SignerPositionId)
-                        .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId));
-               
-                if (signs == null)
-                    throw new HttpResponseException(HttpStatusCode.NoContent);
-                return mapper.Map<IEnumerable<SignDTO>>(signs);
-            }
+                signs = await db.Signs.Include("Initiator").Include("User")
+                    .OrderBy(sign => sign.SignerPositionId)
+                    .Where(sign => (documentId == -1 || sign.DocumentId == documentId) && (userId == -1 || sign.UserId == userId))
+                    .ToListAsync();
+
+            if (signs == null)
+                throw new HttpResponseException(HttpStatusCode.NoContent);
+            return Ok(signs);
         }
 
 
         [HttpPost]
         [ActionName("post")]
-        public void Post([FromBody] Sign body)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Post([FromBody] Sign body)
         {
             if (db.Users.Find(body.UserId) == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot create signatory, signer not found");
             if (db.Documents.Find(body.DocumentId) == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot create signatory, document not found");
 
-            db.Signs.Add(new Sign() 
+            Sign sign = db.Signs.Add(new Sign() 
             { 
                 UserId = body.UserId, 
                 DocumentId = body.DocumentId, 
@@ -78,35 +92,57 @@ namespace Documents.Controllers
                 Signed = null,
                 InitiatorId = body.InitiatorId
             });
-            db.SaveChanges();
+            await db.SaveChangesAsync();
+            return Ok(sign.Id);
         }
 
 
         [HttpPut]
         [ActionName("put")]
-        public void Put([FromBody] SignPOST body)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Put(int id, [FromBody] SignPOST body)
         {
-            Sign sign = db.Signs.Find(body.DocumentId, body.UserId);
+            Sign sign = await db.Signs.FindAsync(id);
             if (sign == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update signatory, signatory not found");
 
-            //Documents_notifications.Mailing.SignatoryNotification(sign);
             sign.Signed = body.Signed;
             sign.UpdateDate = DateTime.Now;
-            db.SaveChanges();
+            sign.UserId = body.UserId;
+
+            await db.SaveChangesAsync();
+            return Ok();
         }
+
+        [HttpPut]
+        [ActionName("notify")]
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Notify(int id)
+        {
+            Sign sign = await db.Signs.Include("User").Include("Initiator").FirstOrDefaultAsync(s => s.Id == id);
+            if (sign == null)
+                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update signatory, signatory not found");
+
+            StartupInfo.Tries += 10;
+            StartupInfo.Msg = "Trying: " + sign.User.Email;
+            mailing.SignatoryNotification(sign);
+            return Ok();
+        }
+
 
         [HttpDelete]
         [ActionName("delete")]
-        public void Delete([FromBody] SignPOST body)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            Sign sign = db.Signs.Find(body.DocumentId, body.UserId);
+            Sign sign = await db.Signs.FindAsync(id);
             if (sign != null)
             {
                 db.Signs.Remove(sign);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete signatory, signatory not found");
+            else return NotFound();
         }
 
         protected override void Dispose(bool disposing)

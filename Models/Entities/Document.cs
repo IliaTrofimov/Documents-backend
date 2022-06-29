@@ -23,9 +23,9 @@ namespace Documents.Models.Entities
         [StringLength(500)]
         public string Name { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        [DefaultValue(0)]
-        public int Type { get; set; }
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DefaultValue(0)]
+        public int Type { get; set; } = 0;
 
 
         [Column(TypeName = "date")]

@@ -4,11 +4,15 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http.Description;
+using System.Data.Entity;
 
 using Documents.Utility;
-using Documents.Entities;
-using Documents.POST;
-using Documents.DTO;
+using Documents.Models.DTO;
+using Documents.Models.Entities;
+using Documents.Models.POST;
+using Documents.Models;
 
 namespace Documents.Controllers
 {
@@ -107,55 +111,60 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("count")] 
-        public int Count(int user = -1, int type = -1, bool showDepricated = true)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Count(int user = -1, int type = -1, bool showDepricated = true)
         {
-            return db.Templates.Count(t => (type == -1 || t.TemplateTypeId == type) &&
+            int count = await db.Templates.CountAsync(t => (type == -1 || t.TemplateTypeId == type) &&
                             (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+            return Ok(count);
         }
 
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<TemplateDTO> Get(int page = 0, int pageSize = -1, int user = -1, int type = -1, bool showDepricated = true)
+        [ResponseType(typeof(IEnumerable<TemplateDTO>))]
+        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1, int user = -1, int type = -1, bool showDepricated = true)
         {
-            IQueryable<Template> templates;
+            List<Template> templates;
             if (pageSize != -1)
-                templates = db.Templates.OrderBy(t => t.Id)
+                templates = await db.Templates.OrderBy(t => t.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize)
                     .Where(t => (type == -1 || t.TemplateTypeId == type) && 
-                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated)).ToListAsync();
             else
-                templates = db.Templates.Where(t => (type == -1 || t.TemplateTypeId == type) &&
-                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+                templates = await db.Templates.Where(t => (type == -1 || t.TemplateTypeId == type) &&
+                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated)).ToListAsync();
 
             if (templates == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
 
-            return mapper.Map<IEnumerable<TemplateDTO>>(templates.ToList());
+            return Ok(mapper.Map<IEnumerable<TemplateDTO>>(templates));
         }
 
         [HttpGet]
         [ActionName("get")]
-        public Template Get(int id)
+        [ResponseType(typeof(Template))]
+        public async Task<IHttpActionResult> Get(int id)
         {
            
-            Template template = db.Templates.Include("TemplateType.Positions").FirstOrDefault(t => t.Id == id);
+            Template template = await db.Templates.Include("TemplateType.Positions").FirstOrDefaultAsync(t => t.Id == id);
             if (template == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            return template.SortTemplateItems();
+            return Ok(template.SortTemplateItems());
         }
 
 
         [HttpPost]
         [ActionName("post")]
-        public int Post([FromBody] Template body)
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Post([FromBody] Template body)
         {
             var user = db.Users.FirstOrDefault();
             if (user == null)
             {
-                user = db.Users.Add(Documents.Entities.User.CreateAdmin());
+                user = db.Users.Add(Models.Entities.User.CreateAdmin());
                 user.PositionId = 4;
                 db.SaveChanges();
             }
@@ -167,14 +176,15 @@ namespace Documents.Controllers
                 UpdateDate = System.DateTime.Now,
                 AuthorId = user.Id
             });
-            db.SaveChanges();
-            return template.Id;
+            await db.SaveChangesAsync();
+            return Ok(template.Id);
         }
 
 
         [HttpPut]
         [ActionName("put")]
-        public Template Put(int id, [FromBody] Template template)
+        [ResponseType(typeof(Template))]
+        public async Task<IHttpActionResult> Put(int id, [FromBody] Template template)
         {
             Template found = db.Templates.Find(id);
             if (template == null)
@@ -187,13 +197,14 @@ namespace Documents.Controllers
             found.Name = template.Name;
             found.TemplateTypeId = template.TemplateTypeId;
 
-            db.SaveChanges();      
-            return found.SortTemplateItems();
+            await db.SaveChangesAsync();      
+            return Ok(found.SortTemplateItems());
         }
 
         [HttpPut]
         [ActionName("put-table")]
-        public TemplateTable UpdateTable(int id, [FromBody] TemplateTable table)
+        [ResponseType(typeof(TemplateTable))]
+        public async Task<IHttpActionResult> UpdateTable(int id, [FromBody] TemplateTable table)
         {
             Template template = db.Templates.Find(id);
             if (template == null)
@@ -201,30 +212,32 @@ namespace Documents.Controllers
 
             table = _UpdateItem(template, table);
             template.UpdateDate = System.DateTime.Now;
-            db.SaveChanges();
-            return table;
+            await db.SaveChangesAsync();
+            return Ok(table);
         }
 
         [HttpPut]
         [ActionName("put-field")]
-        public TemplateField UpdateField(int id, [FromBody] TemplateField field)
+        [ResponseType(typeof(TemplateField))]
+        public async Task<IHttpActionResult> UpdateField(int id, [FromBody] TemplateField field)
         {
-            Template template = db.Templates.Find(id);
+            Template template = await db.Templates.FindAsync(id);
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
             field = _UpdateItem(template, field);
             template.UpdateDate = System.DateTime.Now;
-            db.SaveChanges();
-            return field;
+            await db.SaveChangesAsync();
+            return Ok(field);
         }
 
 
         [HttpPut]
         [ActionName("move-items")]
-        public Template MoveItem(int id, [FromBody] ItemMovementPOST body)
+        [ResponseType(typeof(TemplateField))]
+        public async Task<IHttpActionResult> MoveItem(int id, [FromBody] ItemMovementPOST body)
         {
-            Template template = db.Templates.Find(id);
+            Template template = await db.Templates.FindAsync(id);
             if (template == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, template not found");
 
@@ -238,14 +251,15 @@ namespace Documents.Controllers
             itemB.Order = temp;
             template.UpdateDate = System.DateTime.Now;
 
-            db.SaveChanges();
-            return template.SortTemplateItems();
+            await db.SaveChangesAsync();
+            return Ok(template.SortTemplateItems());
         }
 
 
         [HttpDelete]
         [ActionName("delete")]
-        public void Delete(int id)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> Delete(int id)
         {
             Template template = db.Templates.Find(id);
             if (template != null)
@@ -257,15 +271,16 @@ namespace Documents.Controllers
                 db.TemplateTables.RemoveRange(db.TemplateTables.Where(f => f.TemplateId == id));
                 db.SaveChanges();
                 db.Templates.Remove(template);
-                db.SaveChanges();
-                Ok();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete template, template not found");
+            else return NotFound();
         }
 
         [HttpDelete]
         [ActionName("delete-field")]
-        public void DeleteField(int id, int childId)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> DeleteField(int id, int childId)
         {
             Template template = db.Templates.Find(id);
             TemplateField item = db.TemplateFields.Find(childId);
@@ -278,16 +293,16 @@ namespace Documents.Controllers
                 template.UpdateDate = System.DateTime.Now;
                 db.TemplateFields.Remove(item);
                 _ResetOrder(template, item);
-                db.SaveChanges();
-                Ok();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else 
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, field you trying delete is not found");
+            else return NotFound();
         }
 
         [HttpDelete]
         [ActionName("delete-table")]
-        public void DeleteTable(int id, int childId)
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> DeleteTable(int id, int childId)
         {
             Template template = db.Templates.Find(id);
             TemplateTable item = db.TemplateTables.Find(childId);
@@ -302,11 +317,10 @@ namespace Documents.Controllers
                 db.TemplateTables.Remove(item);
                 _ResetOrder(template, item);
 
-                db.SaveChanges();
-                Ok();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else
-                this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot change template, table you trying delete is not found");
+            else return NotFound();
         }
 
 

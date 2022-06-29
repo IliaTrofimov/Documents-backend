@@ -34,7 +34,7 @@ namespace Documents.Models.Entities
         [DefaultValue((byte)PermissionFlag.FullAccess)]
         public byte Permissions { get; set; }
 
-        public int? PositionId { get; set; }
+        public int PositionId { get; set; }
         public Position Position { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; }

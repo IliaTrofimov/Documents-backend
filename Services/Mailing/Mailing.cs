@@ -5,22 +5,45 @@ using MailKit.Net.Smtp;
 using MimeKit;
 
 using Documents.Models.Entities;
-using Documents.Services.Mailing.Templates;
+using Documents.Services.MailTemplates;
 using Documents.Properties;
+using System.Threading.Tasks;
 
-
-namespace Documents.Services.Mailing
+namespace Documents.Services
 {
-    public abstract class Mailing
+    public class Mailing
     {
-        private static string EmailHost { get; set; } = Settings.Default.EmailHost;
-        private static int EmailPort { get; set; } = Settings.Default.EmailPort;
-        private static string EmailPassword { get; set; } = Settings.Default.YandexPassword;
-        private static string EmailLogin { get; set; } = Settings.Default.YandexLogin;
-        private static string EmailFrom { get; set; } = Settings.Default.EmailFrom;
-        private static string BaseUrl { get; set; } = Settings.Default.BaseUrl;
+        public string EmailHost { get; set; } = Settings.Default.EmailHost;
+        public int EmailPort { get; set; } = Settings.Default.EmailPort;
+        public string EmailPassword { get; set; } = Settings.Default.EmailPassword;
+        public string EmailLogin { get; set; } = Settings.Default.EmailLogin;
+        public string EmailFrom { get; set; } = Settings.Default.EmailFrom;
+        public string EmailFromName { get; set; } = Settings.Default.EmailFromName;
+        public string BaseUrl { get; set; } = Settings.Default.BaseUrl;
 
-        private static Regex RegexEmail = new Regex(@"^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@([a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)*[a-z]{2,}$");
+        private static readonly Regex RegexEmail = new Regex(@"^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@([a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)*[a-z]{2,}$");
+
+        public Mailing() { }
+
+        public Mailing(string emailFrom, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
+        {
+            EmailHost = emailHost;
+            EmailPort = emailPort;
+            EmailPassword = emailPassword;
+            EmailLogin = emailFrom;
+            EmailFrom = emailFrom;
+            BaseUrl = baseUrl;
+        }
+
+        public Mailing(string emailFrom, string emailLogin, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
+        {
+            EmailHost = emailHost;
+            EmailPort = emailPort;
+            EmailPassword = emailPassword;
+            EmailLogin = emailLogin;
+            EmailFrom = emailFrom;
+            BaseUrl = baseUrl;
+        }
 
 
 
@@ -29,17 +52,19 @@ namespace Documents.Services.Mailing
         /// Если sign.Signed == null, то высылает подписанту уведомление о необходимости просмотреть документ.
         /// если sign.Signed != null, то высылает инициатору уведомление об изменении статуса подписи.
         /// </param>
-        public static void SignatoryNotification(Sign sign)
+        public async void SignatoryNotification(Sign sign)
         {
             if (!RegexEmail.IsMatch(sign.User.Email)) return;
 
             using (var client = new SmtpClient())
             {
+                StartupInfo.Tries++;
+                StartupInfo.Msg = $"Sign: {EmailFrom}->{sign.User.Email}, {EmailPort}:{EmailHost}, {EmailLogin}:{EmailLogin}";
                 client.Connect(EmailHost, EmailPort, true);
                 client.Authenticate(EmailLogin, EmailPassword);
 
                 MimeMessage message = new MimeMessage();
-                message.From.Add(new MailboxAddress(EmailFrom, Settings.Default.EmailLogin));
+                message.From.Add(new MailboxAddress(EmailFromName, EmailFrom));
                 message.Subject = "Визирование";
 
                 message.To.Add(new MailboxAddress(sign.User.GetFIO(), sign.User.Email));
@@ -48,34 +73,61 @@ namespace Documents.Services.Mailing
                 else
                     message.Body = new TextPart("html") { Text = new UpdatedSignMail(sign, BaseUrl).TransformText() };
 
-                client.SendAsync(message).Start();
+                await client.SendAsync(message);
                 client.Disconnect(true);
+                StartupInfo.Counter++;
             }
         }
 
-        public static void Test(string text = "test message", string subject = "Test")
+        public async Task SendAsync(string email, string name, string subject = "test mail", string text = "test mail")
         {
+            if (!RegexEmail.IsMatch(email)) return;
+
             using (var client = new SmtpClient())
             {
+                StartupInfo.Tries++;
+                StartupInfo.Msg = $"SA: {EmailFrom}->{email}, {EmailPort}:{EmailHost}, {EmailLogin}:{EmailLogin}";
                 client.Connect(EmailHost, EmailPort, true);
                 client.Authenticate(EmailLogin, EmailPassword);
 
                 MimeMessage message = new MimeMessage();
-                message.From.Add(new MailboxAddress(EmailFrom, Settings.Default.EmailLogin));
+                message.From.Add(new MailboxAddress(EmailFromName, EmailFrom));
                 message.Subject = subject;
-
-                message.To.Add(new MailboxAddress("Илья Трофимов", Settings.Default.EmailLogin));
+                message.To.Add(new MailboxAddress(name, email));
                 message.Body = new TextPart("plain") { Text = text };
-
-                client.SendAsync(message).Start();
+                
+                await client.SendAsync(message);
                 client.Disconnect(true);
+                StartupInfo.Counter++;
             }
         }
 
+        public void Send(string email, string name, string subject = "test mail", string text = "test mail")
+        {
+            if (!RegexEmail.IsMatch(email)) return;
+
+            using (var client = new SmtpClient())
+            {
+                StartupInfo.Tries++;
+                StartupInfo.Msg = $"S: {EmailFrom}->{email}, {EmailPort}:{EmailHost}, {EmailLogin}:{EmailLogin}";
+                client.Connect(EmailHost, EmailPort, true);
+                client.Authenticate(EmailLogin, EmailPassword);
+
+                MimeMessage message = new MimeMessage();
+                message.From.Add(new MailboxAddress(EmailFromName, EmailFrom));
+                message.Subject = subject;
+                message.To.Add(new MailboxAddress(name, email));
+                message.Body = new TextPart("plain") { Text = text };
+
+                client.Send(message);
+                client.Disconnect(true);
+                StartupInfo.Counter++;
+            }
+        }
 
         /// <summary> Рассылает владельцам документов уведомления с указанием даты истечения срока действия документа </summary>
         /// <returns> Количество успешно отправленных писем </returns>
-        public static int ExpireNotification(IEnumerable<Document> documents)
+        public async Task<int> ExpireNotification(IEnumerable<Document> documents)
         {
             int count = 0;
 
@@ -85,7 +137,7 @@ namespace Documents.Services.Mailing
                 client.Authenticate(EmailLogin, EmailPassword);
 
                 MimeMessage message = new MimeMessage();
-                message.From.Add(new MailboxAddress(EmailFrom, Settings.Default.EmailLogin));
+                message.From.Add(new MailboxAddress(EmailFromName, EmailFrom));
                 message.Subject = "Напоминание";
 
                 foreach (Document document in documents)
@@ -97,7 +149,7 @@ namespace Documents.Services.Mailing
 
                         try
                         {
-                            client.SendAsync(message).Start();
+                            await client.SendAsync(message);
                             count++;
                         }
                         catch (Exception) { }
@@ -108,7 +160,5 @@ namespace Documents.Services.Mailing
             }
             return count;
         }
-
-
     }
 }

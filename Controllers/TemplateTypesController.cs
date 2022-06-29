@@ -4,9 +4,13 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http.Description;
+using System.Data.Entity;
 
 using Documents.Utility;
-using Documents.Entities;
+using Documents.Models.Entities;
+using Documents.Models;
 
 namespace Documents.Controllers
 {
@@ -14,32 +18,34 @@ namespace Documents.Controllers
     public class TemplateTypesController : ApiController
     {
         DataContext db = new DataContext();
-        Mapper mapper = new Mapper(WebApiApplication.mapperConfig);
-
 
         [HttpGet]
         [ActionName("count")]
-        public int Count()
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Count()
         {
-            return db.TemplateTypes.Count();
+            int count = await db.TemplateTypes.CountAsync();
+            return Ok(count);
         }
 
         [HttpGet]
         [ActionName("list")]
-        public IEnumerable<TemplateType> Get(int page = 0, int pageSize = -1)
+        [ResponseType(typeof(IEnumerable<TemplateType>))]
+        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1)
         {
-            IQueryable<TemplateType> types;
+            List<TemplateType> types;
             if (pageSize != -1)
-                types = db.TemplateTypes.Include("Positions")
+                types = await db.TemplateTypes.Include("Positions")
                     .OrderBy(type => type.Id)
                     .Skip(page * pageSize)
-                    .Take(pageSize);
+                    .Take(pageSize)
+                    .ToListAsync();
             else
-                types = db.TemplateTypes.Include("Positions");
+                types = await db.TemplateTypes.Include("Positions").ToListAsync();
 
             if (types == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
-            return types.ToList();
+            return Ok(types);
         }
 
         [HttpGet]
@@ -55,7 +61,9 @@ namespace Documents.Controllers
 
 
         [HttpPost]
-        public int Post([FromBody] TemplateType type)
+        [ActionName("post")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> Post([FromBody] TemplateType type)
         {
             var newType = db.TemplateTypes.Add(new TemplateType() { Name = type.Name });
             foreach (var pos in type.Positions)
@@ -67,15 +75,17 @@ namespace Documents.Controllers
                         newType.Positions.Add(p);
                 }
             }
-            db.SaveChanges();
-            return newType.Id;
+            await db.SaveChangesAsync();
+            return Ok(newType.Id);
         }
 
 
         [HttpPut]
-        public TemplateType Put(int id, [FromBody] TemplateType type)
+        [ActionName("put")]
+        [ResponseType(typeof(TemplateType))]
+        public async Task<IHttpActionResult> Put(int id, [FromBody] TemplateType type)
         {
-            TemplateType found = db.TemplateTypes.Find(id);
+            TemplateType found = await db.TemplateTypes.FindAsync(id);
             if (type == null)
                 this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot update template type, type not found");
 
@@ -90,24 +100,27 @@ namespace Documents.Controllers
                         found.Positions.Add(p);
                 }
             }
-                    
-            db.SaveChanges();
-            return found;
+
+            await db.SaveChangesAsync();
+            return Ok(found);
         }
 
         [HttpDelete]
-        public void Delete(int id)
+        [ActionName("delete")]
+        [ResponseType(typeof(TemplateType))]
+        public async Task<IHttpActionResult> Delete(int id)
         {
-            TemplateType type = db.TemplateTypes.Find(id);
+            TemplateType type = await db.TemplateTypes.FindAsync(id);
             if (type != null)
             {
-                if (db.Templates.FirstOrDefault(t => t.TemplateTypeId == id) != null)
+                if ((await db.Templates.FirstOrDefaultAsync(t => t.TemplateTypeId == id)) != null)
                     this.ThrowResponseException(HttpStatusCode.Conflict, "Cannot delete template type, some assests still use it");
-                
+
                 db.TemplateTypes.Remove(type);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+                return Ok();
             }
-            else this.ThrowResponseException(HttpStatusCode.NotFound, "Cannot delete template type, type not found");
+            else return NotFound();
         }
 
         protected override void Dispose(bool disposing)

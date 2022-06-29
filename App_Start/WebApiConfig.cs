@@ -21,8 +21,8 @@ namespace Documents
             config.Routes.MapHttpRoute(
                name: "action",
                routeTemplate: "api/{controller}/{action}",
-               defaults: new { action = "list" }
-           );
+               defaults: new { action = "list", controller = "default" }
+            );
 
             config.Routes.MapHttpRoute(
                 name: "id-action",
