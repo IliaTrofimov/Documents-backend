@@ -52,7 +52,7 @@ namespace Documents.Services
         /// Если sign.Signed == null, то высылает подписанту уведомление о необходимости просмотреть документ.
         /// если sign.Signed != null, то высылает инициатору уведомление об изменении статуса подписи.
         /// </param>
-        public async void SignatoryNotification(Sign sign)
+        public async Task SignatoryNotification(Sign sign)
         {
             if (!RegexEmail.IsMatch(sign.User.Email)) return;
 
@@ -77,6 +77,7 @@ namespace Documents.Services
                 client.Disconnect(true);
                 StartupInfo.Counter++;
             }
+            return;
         }
 
         public async Task SendAsync(string email, string name, string subject = "test mail", string text = "test mail")

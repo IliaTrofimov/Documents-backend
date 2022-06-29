@@ -116,7 +116,7 @@ namespace Documents.Controllers
 
         [HttpPut]
         [ActionName("notify")]
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(Dictionary<string, string>))]
         public async Task<IHttpActionResult> Notify(int id)
         {
             Sign sign = await db.Signs.Include("User").Include("Initiator").FirstOrDefaultAsync(s => s.Id == id);

@@ -23,11 +23,11 @@ namespace Documents.Models.Entities
         [NotMapped]
         public string DocumentName => Document.Name;
 
-        [Newtonsoft.Json.JsonIgnore]
+       
         public virtual User User { get; set; }
 
-        [NotMapped]
-        public string SignerShortname => User.GetFIO();
+        //[NotMapped]
+        //public virtual string SignerShortname => User.GetFIO();
 
         [Required]
         public int SignerPositionId { get; set; }
@@ -37,11 +37,10 @@ namespace Documents.Models.Entities
         [Required]
         public int InitiatorId { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
         public virtual User Initiator { get; set; }
 
-        [NotMapped]
-        public string InitiatorShortname => Initiator.GetFIO();
+       // [NotMapped]
+        //public virtual string InitiatorShortname => Initiator.GetFIO();
 
         [Required]
         public System.DateTime UpdateDate { get; set; }
