@@ -7,7 +7,7 @@
 //     повторного создания кода.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Documents.Services.MailTemplates
+namespace Documents.Services.Mailing.Templates
 {
     using System;
     
@@ -15,7 +15,7 @@ namespace Documents.Services.MailTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+    #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
     public partial class ExpireMail : ExpireMailBase
     {
@@ -25,64 +25,65 @@ namespace Documents.Services.MailTemplates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\n\r\n<html><body>\r\n<strong>Напоминание</strong><br>\r\nУважаемый ");
+            this.Write("\n");
+            this.Write("\n\n\n<html><body>\n<strong>Напоминание</strong><br>\nУважаемый ");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Firstname));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Fathersname));
             
             #line default
             #line hidden
-            this.Write("!<br>\r\nСрок действия вашего документа <a href=\'");
+            this.Write("!<br>\nСрок действия вашего документа <a href=\'");
             
-            #line 8 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(BaseUrl));
             
             #line default
             #line hidden
             this.Write("/documents/");
             
-            #line 8 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(DocumentId));
             
             #line default
             #line hidden
             this.Write("\'>");
             
-            #line 8 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(DocumentName));
             
             #line default
             #line hidden
-            this.Write("</a> \r\n");
+            this.Write("</a> \n");
             
-            #line 9 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Expire <= DateTime.Now ? " уже истёк " : " истекает через " + (Expire.Value.Date - DateTime.Now.Date).Days + " дней "));
             
             #line default
             #line hidden
-            this.Write(" \r\n(дата истечения ");
+            this.Write(" \n(дата истечения ");
             
-            #line 10 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Expire.Value.ToString("d")));
             
             #line default
             #line hidden
-            this.Write("). \r\nПожалуйста, проверьте статус документа в <a href=\'");
+            this.Write("). \nПожалуйста, проверьте статус документа в <a href=\'");
             
-            #line 11 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\ExpireMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\ExpireMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(BaseUrl));
             
             #line default
             #line hidden
-            this.Write("/home\'>личном кабинете</a>.<br><br>\r\n<small>Это письмо было создано автоматически" +
-                    ", не нужно на него отвечать.</small>\r\n</body></html>");
+            this.Write("/home\'>личном кабинете</a>.<br><br>\n<small>Это письмо было создано автоматически," +
+                    " не нужно на него отвечать.</small>\n</body></html>");
             return this.GenerationEnvironment.ToString();
         }
     }

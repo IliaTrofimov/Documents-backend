@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Documents.Models.Entities
 {
+    public enum DocumentStatus
+    {
+        InWork, Signing, InUse, Old
+    }
+
     [Table("Documents")]
     public class Document
     {      
@@ -16,6 +21,7 @@ namespace Documents.Models.Entities
             UpdateDate = DateTime.Now;
         }
 
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -23,10 +29,7 @@ namespace Documents.Models.Entities
         [StringLength(500)]
         public string Name { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        //[DefaultValue(0)]
-        public int Type { get; set; } = 0;
-
+        public DocumentStatus Type { get; set; } = DocumentStatus.InWork;
 
         [Column(TypeName = "date")]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
@@ -40,15 +43,12 @@ namespace Documents.Models.Entities
         public int TemplateId { get; set; }
         public virtual Template Template { get; set; }
 
-
-        [NotMapped]
-        public string AuthorName => Author != null ? Author.GetFIO() : "Неизвестно";
-        public int? AuthorId { get; set; }
+        [Column("Author_CWID")]
+        public string AuthorCWID { get; set; }
         public virtual User Author { get; set; }
 
 
         public virtual ICollection<DocumentDataItem> DocumentDataItems { get; set; }
-
         public virtual ICollection<Sign> Signs { get; set; }
 
 

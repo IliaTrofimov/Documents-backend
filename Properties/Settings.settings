@@ -9,25 +9,19 @@
       <Value Profile="(Default)">smtp.yandex.ru</Value>
     </Setting>
     <Setting Name="EmailPassword" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">olrogpgfrfhetfpm</Value>
+      <Value Profile="(Default)">password</Value>
+    </Setting>
+    <Setting Name="EmailLogin" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">example</Value>
     </Setting>
     <Setting Name="EmailFrom" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ilia.trofimov2014@yandex.ru</Value>
-    </Setting>
-    <Setting Name="DataDirectory" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-backend\App_Data</Value>
+      <Value Profile="(Default)">example@yandex.ru</Value>
     </Setting>
     <Setting Name="EmailFromName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">my_notifications</Value>
     </Setting>
-    <Setting Name="EmailLogin" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">ilia.trofimov2014</Value>
-    </Setting>
     <Setting Name="BaseUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://localhost:80/frontend</Value>
-    </Setting>
-    <Setting Name="ExpireSpamPeriodSeconds" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">20</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -12,7 +12,7 @@ namespace Documents.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -43,7 +43,7 @@ namespace Documents.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("olrogpgfrfhetfpm")]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
         public string EmailPassword {
             get {
                 return ((string)(this["EmailPassword"]));
@@ -52,19 +52,19 @@ namespace Documents.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ilia.trofimov2014@yandex.ru")]
-        public string EmailFrom {
+        [global::System.Configuration.DefaultSettingValueAttribute("example")]
+        public string EmailLogin {
             get {
-                return ((string)(this["EmailFrom"]));
+                return ((string)(this["EmailLogin"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\iliat\\Source\\Repos\\IliaTrofimov\\Documents-backend\\App_Data")]
-        public string DataDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("example@yandex.ru")]
+        public string EmailFrom {
             get {
-                return ((string)(this["DataDirectory"]));
+                return ((string)(this["EmailFrom"]));
             }
         }
         
@@ -79,28 +79,10 @@ namespace Documents.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ilia.trofimov2014")]
-        public string EmailLogin {
-            get {
-                return ((string)(this["EmailLogin"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:80/frontend")]
         public string BaseUrl {
             get {
                 return ((string)(this["BaseUrl"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int ExpireSpamPeriodSeconds {
-            get {
-                return ((int)(this["ExpireSpamPeriodSeconds"]));
             }
         }
     }

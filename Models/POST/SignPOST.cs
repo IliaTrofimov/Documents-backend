@@ -3,8 +3,8 @@
     public class SignPOST
     {
         public int DocumentId;
-        public int UserId;
-        public int InitiatorId;
+        public string UserCWID = null;
+        public string InitiatorCWID;
         public bool? Signed;
     }
 }

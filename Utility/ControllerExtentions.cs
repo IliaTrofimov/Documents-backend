@@ -15,5 +15,15 @@ namespace Documents.Utility
             var errorResponse = controller.Request.CreateErrorResponse(statusCode, message);
             throw new HttpResponseException(errorResponse);
         }
+
+        public static IHttpActionResult HttpResponse(this ApiController controller, HttpStatusCode statusCode, string message)
+        {
+            return new HttpResult(statusCode, controller.Request, message);
+        }
+
+        public static IHttpActionResult HttpResponse(this ApiController controller, HttpStatusCode statusCode)
+        {
+            return new HttpResult(statusCode, controller.Request);
+        }
     }
 }

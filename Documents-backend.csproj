@@ -15,14 +15,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Documents</RootNamespace>
     <AssemblyName>Documents-backend</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44381</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -86,6 +86,10 @@
     </Reference>
     <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Extensions.Primitives.6.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Office.Interop.Word.15.0.4797.1004\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Spatial, Version=7.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Spatial.7.10.0\lib\net45\Microsoft.Spatial.dll</HintPath>
@@ -206,7 +210,9 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PrintingController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\MailingController.cs" />
     <Compile Include="Controllers\PositionsController.cs" />
     <Compile Include="Controllers\SignsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -216,19 +222,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202206271310471_init.cs" />
-    <Compile Include="Migrations\202206271310471_init.designer.cs">
-      <DependentUpon>202206271310471_init.cs</DependentUpon>
+    <Compile Include="Migrations\202207011538370_init.cs" />
+    <Compile Include="Migrations\202207011538370_init.designer.cs">
+      <DependentUpon>202207011538370_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202206271611134_init2.cs" />
-    <Compile Include="Migrations\202206271611134_init2.designer.cs">
-      <DependentUpon>202206271611134_init2.cs</DependentUpon>
+    <Compile Include="Migrations\202207051232251_user-fields.cs" />
+    <Compile Include="Migrations\202207051232251_user-fields.designer.cs">
+      <DependentUpon>202207051232251_user-fields.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Administrative\UserPermission.cs" />
-    <Compile Include="Models\DTO\DocumentDataItemDTO.cs" />
     <Compile Include="Models\DTO\DocumentDTO.cs" />
-    <Compile Include="Models\DTO\DocumentTableCellDTO.cs" />
     <Compile Include="Models\DTO\SignDTO.cs" />
     <Compile Include="Models\DTO\TemplateDTO.cs" />
     <Compile Include="Models\DTO\TemplateTypeDTO.cs" />
@@ -251,10 +255,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Services\Mailing\EmailSender.cs" />
-    <Compile Include="Services\Mailing\Mailing.cs" />
-    <Compile Include="Services\Mailing\ExpireMailSender.cs" />
-    <Compile Include="Services\Mailing\MailScheduler.cs" />
+    <Compile Include="Services\Mailing\MailingClient.cs" />
     <Compile Include="Services\Mailing\Templates\ExpireMail1.cs">
       <DependentUpon>ExpireMail.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -273,6 +274,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Services\Mailing\Templates\UpdatedSignMailData.cs" />
+    <Compile Include="Services\Printing\DocumentPrinter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utility\Handlers\MessageHandler.cs" />
     <Compile Include="Models\DataContext.cs" />
@@ -294,6 +296,11 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>UpdatedSignMail1.cs</LastGenOutput>
     </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\ConnectionStrings.config" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -307,21 +314,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <Content Include="README.md" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Properties\PublishProfiles\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202206271310471_init.resx">
-      <DependentUpon>202206271310471_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202207011538370_init.resx">
+      <DependentUpon>202207011538370_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202206271611134_init2.resx">
-      <DependentUpon>202206271611134_init2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202207051232251_user-fields.resx">
+      <DependentUpon>202207051232251_user-fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -345,7 +346,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56065</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:80/</IISUrl>
+          <IISUrl>http://localhost:4000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -365,12 +366,8 @@
   </Target>
   <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>@echo off
-
-copy /y NUL $(TargetDir)BuildInfo.txt
-set _time=%25TIME:~0,2%25:%25TIME:~3,2%25:%25TIME:~6,2%25
-echo build: %25DATE%25  %25_time%25 &gt;&gt; $(TargetDir)BuildInfo.txt
-echo Build time %25DATE%25 %25_time%25 - build info at $(TargetDir)BuildInfo.txt</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Documents.Services
 {
-    public class Mailing
+    public class MailingClient
     {
         public string EmailHost { get; set; } = Settings.Default.EmailHost;
         public int EmailPort { get; set; } = Settings.Default.EmailPort;
@@ -23,9 +23,9 @@ namespace Documents.Services
 
         private static readonly Regex RegexEmail = new Regex(@"^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@([a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)*[a-z]{2,}$");
 
-        public Mailing() { }
+        public MailingClient() { }
 
-        public Mailing(string emailFrom, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
+        public MailingClient(string emailFrom, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
         {
             EmailHost = emailHost;
             EmailPort = emailPort;
@@ -35,7 +35,7 @@ namespace Documents.Services
             BaseUrl = baseUrl;
         }
 
-        public Mailing(string emailFrom, string emailLogin, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
+        public MailingClient(string emailFrom, string emailLogin, string emailPassword, string emailHost, int emailPort = 465, string baseUrl = null)
         {
             EmailHost = emailHost;
             EmailPort = emailPort;

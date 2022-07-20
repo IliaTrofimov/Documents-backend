@@ -13,7 +13,6 @@ using Documents.Models.Entities;
 using Documents.Models.POST;
 using Documents.Models;
 
-
 namespace Documents.Controllers
 {
     [EnableCors(origins: "http://localhost:4200", headers: "*", methods: "GET, POST, PUT, DELETE", SupportsCredentials = true)]
@@ -25,17 +24,21 @@ namespace Documents.Controllers
         [HttpGet]
         [ActionName("count")]
         [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> Count(int template = -1, int user = -1, int type = -1)
+        public async Task<IHttpActionResult> Count(int template = -1, string user = null, int type = -1)
         {
-            int count = await db.Documents.CountAsync(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
-                        (template == -1 || d.TemplateId == template));
+            int count = await db.Documents.CountAsync(d => (type == -1 || d.Type == (DocumentStatus)type) && 
+                (user == null || d.AuthorCWID == user) && (template == -1 || d.TemplateId == template));
             return Ok(count);
         }
 
         [HttpGet]
         [ActionName("list")]
         [ResponseType(typeof(IEnumerable<DocumentDTO>))]
-        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1, int template = -1, int user = -1, int type = -1)
+        public async Task<IHttpActionResult> Get(int page = 0,
+                                                 int pageSize = -1,
+                                                 int template = -1,
+                                                 string user = null,
+                                                 int type = -1)
         {
             List<Document> documents;
             if (pageSize != -1)
@@ -43,12 +46,12 @@ namespace Documents.Controllers
                     .OrderBy(t => t.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize)
-                    .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) && 
-                        (template == -1 || d.TemplateId == template)).ToListAsync();
+                    .Where(d => (type == -1 || d.Type == (DocumentStatus)type) && 
+                        (user == null || d.AuthorCWID == user) && (template == -1 || d.TemplateId == template)).ToListAsync();
             else
                 documents = await db.Documents.Include("Template")
-                    .Where(d => (type == -1 || d.Type == type) && (user == -1 || d.AuthorId == user) &&
-                        (template == -1 || d.TemplateId == template)).ToListAsync();
+                    .Where(d => (type == -1 || d.Type == (DocumentStatus)type) && 
+                        (user == null || d.AuthorCWID == user) && (template == -1 || d.TemplateId == template)).ToListAsync();
 
             if (documents == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
@@ -58,7 +61,7 @@ namespace Documents.Controllers
 
         [HttpGet]
         [ActionName("get")]
-        [ResponseType(typeof(Document))]
+        [ResponseType(typeof(DocumentDTOFull))]
         public async Task<IHttpActionResult> Get(int id)
         {
             Document document = await db.Documents
@@ -71,7 +74,7 @@ namespace Documents.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
             document.Template = document.Template.SortTemplateItems();
-            return Ok(document);
+            return Ok(mapper.Map<DocumentDTOFull>(document));
         }   
 
 
@@ -96,16 +99,24 @@ namespace Documents.Controllers
             {
                 TemplateId = body.TemplateId,
                 UpdateDate = System.DateTime.Now,
-                AuthorId = user.Id,
+                AuthorCWID = user.CWID,
                 Name = body.Name,
                 Type = 0
             });
             await db.SaveChangesAsync();
 
             foreach (var pos in template.TemplateType.Positions)
-                db.Signs.Add(new Sign() { DocumentId = document.Id, InitiatorId = document.Author.Id, UpdateDate = System.DateTime.Now, CreateDate = System.DateTime.Now, SignerPositionId = user.PositionId });
+            {
+                db.Signs.Add(new Sign() { 
+                    DocumentId = document.Id, 
+                    InitiatorCWID = document.Author.CWID, 
+                    UpdateDate = System.DateTime.Now, 
+                    CreateDate = System.DateTime.Now, 
+                    SignerPositionId = pos.Id
+                });
+            }
 
-            foreach (var item in template.TemplateItems)
+            foreach (var item in template.TemplateItems.Where(i => (i is TemplateField f && f.TemplateTableId == null) || i is TemplateTable))
             {
                 if (item is TemplateField field)
                     document.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.Id, Document = document });
@@ -129,13 +140,13 @@ namespace Documents.Controllers
         [HttpPost]
         [ActionName("from-existing")]
         [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> FromExisting([FromBody] int documentId, [FromBody] int authorId)
+        public async Task<IHttpActionResult> FromExisting([FromBody] int documentId, [FromBody] string authorId)
         {
             Document oldDocument = db.Documents.Find(documentId);
             if (oldDocument == null)
                 BadRequest("Cannot create new version of document, previous document not found");
 
-            Document document = new Document() { TemplateId = oldDocument.TemplateId, AuthorId = authorId, UpdateDate = System.DateTime.Now };
+            Document document = new Document() { TemplateId = oldDocument.TemplateId, AuthorCWID = authorId, UpdateDate = System.DateTime.Now };
             foreach (var item in oldDocument.DocumentDataItems)
                 document.DocumentDataItems.Add(new DocumentDataItem() { FieldId = item.FieldId, Row = item.Row, Value = item.Value });
 
@@ -148,10 +159,10 @@ namespace Documents.Controllers
         [HttpPut]
         [ActionName("put")]
         [ResponseType(typeof(Document))]
-        public async Task<IHttpActionResult> Put([FromBody] Document document)
+        public async Task<IHttpActionResult> Put(int id, [FromBody] Document document)
         {
             document.UpdateDate = System.DateTime.Now;
-            Document found = db.Documents.Find(document.Id);
+            Document found = db.Documents.Find(id);
             if (found == null)
                 BadRequest("Cannot update document, document not found");
 
@@ -161,17 +172,13 @@ namespace Documents.Controllers
             found.Type = document.Type;
             await db.SaveChangesAsync();
 
-            document.Template.TemplateItems = document.Template.TemplateItems
-                .OrderBy(item => item.Order)
-                .Where(item => !(item is TemplateField tf) || tf.TemplateTableId == null)
-                .ToList();
             return Ok(document);
         }
 
         [HttpPut]
         [ActionName("put-field")]
         [ResponseType(typeof(Document))]
-        public async Task<IHttpActionResult> UpdateField(int id, [FromBody] DocumentDataItem item)
+        public IHttpActionResult UpdateField(int id, [FromBody] DocumentDataItem item)
         {
             Document document = db.Documents.Find(id);
             if (document == null)
@@ -186,7 +193,7 @@ namespace Documents.Controllers
                 found.Value = item.Value;
                 found.Row = item.Row;
             }
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             document.Template.TemplateItems = document.Template.TemplateItems
                 .OrderBy(i => i.Order)

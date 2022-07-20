@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -15,26 +14,9 @@ namespace Documents.Controllers
         public Dictionary<string, string> BuildInfo()
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
-            result.Add("Message", "Server is running");
             result.Add("StartupTime", StartupInfo.StartupTime.ToString("H:mm:ss - dd MMM. yyy"));
-            result.Add("Counter", StartupInfo.Counter.ToString());
             result.Add("RequestTime", DateTime.Now.ToString("H:mm:ss - dd MMM. yyyy"));
-            result.Add("Tries", StartupInfo.Tries.ToString());
-            result.Add("Msg", StartupInfo.Msg);
 
-            try
-            {
-                result.Add("BuildDate", DateTime.Parse(
-                    File.ReadLines(@"C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-backend\bin\BuildInfo.txt")
-                   .Last()
-                   .Substring(6).TrimEnd()
-                ).ToString("H:mm:ss - dd MMM. yyyy"));
-            }
-            catch (Exception e)
-            {
-                result.Add("BuildDate", "unknown");
-                result["Message"] += $". Cannot get build time ({e.Message})";
-            }
             return result;
         }
 
@@ -44,7 +26,6 @@ namespace Documents.Controllers
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             Models.DataContext db = new Models.DataContext();
-            result.Add("BuildDate", BuildInfo()["BuildDate"]);
             
             try
             {
@@ -115,7 +96,8 @@ namespace Documents.Controllers
         [ActionName("user")]
         public System.Security.Principal.IPrincipal GetUser()
         {
-            return User;
+            return RequestContext.Principal;
         }
+
     }
 }

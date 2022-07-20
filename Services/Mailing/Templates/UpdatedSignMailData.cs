@@ -1,4 +1,4 @@
-﻿namespace Documents.Services.MailTemplates
+﻿namespace Documents.Services.Mailing.Templates
 {
     partial class UpdatedSignMail
     {

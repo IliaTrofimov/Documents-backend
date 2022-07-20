@@ -17,13 +17,13 @@ namespace Documents.Models.Entities
             UpdateDate = DateTime.Now;
         }
 
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [StringLength(300)]
         public string Name { get; set; }
-
 
         [Column(TypeName = "date")]
         [DefaultValue("getutcdate()")]
@@ -32,20 +32,29 @@ namespace Documents.Models.Entities
         [DefaultValue(0)]
         public bool Depricated { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
-        public virtual ICollection<Document> Document { get; set; }
 
         public virtual int? TemplateTypeId { get; set; }
         public virtual TemplateType TemplateType { get; set; }
 
 
-        [NotMapped]
-        public string AuthorName => Author != null ? Author.GetFIO() : "Неизвестно";
-        public int? AuthorId { get; set; }
         [Newtonsoft.Json.JsonIgnore]
         public virtual User Author { get; set; }
+        [Column("Author_CWID")]
+        public string AuthorCWID { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public int? HtmlTemplateId { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public virtual HtmlTemplate HtmlTemplate { get; set; }
 
 
+        [StringLength(300)]
+        public string Path { get; set; }
+
+
+
+        [Newtonsoft.Json.JsonIgnore]
+        public virtual ICollection<Document> Document { get; set; }
         public virtual ICollection<TemplateItem> TemplateItems { get; set; }
 
 

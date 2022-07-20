@@ -18,8 +18,8 @@ namespace Documents.Models.Entities
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [StringLength(8)]
+        public string CWID { get; set; }
 
         [StringLength(100)]
         public string Firstname { get; set; }
@@ -34,8 +34,31 @@ namespace Documents.Models.Entities
         [DefaultValue((byte)PermissionFlag.FullAccess)]
         public byte Permissions { get; set; }
 
+        [StringLength(200)]
+        public string Email { get; set; }
+
+        [StringLength(20)]
+        public string EmployeeType { get; set; }
+
+        [StringLength(30)]
+        public string LeadingSubgroup { get; set; }
+
+        [StringLength(30)]
+        public string ExternalCompany { get; set; }
+
+        [StringLength(30)]
+        public string OrgName { get; set; }
+
+        [StringLength(30)]
+        public string CompanyCode { get; set; }
+
+
         public int PositionId { get; set; }
         public Position Position { get; set; }
+
+        [Column("Manager_CWID")]
+        public string ManagerCWID { get; set; }
+        public User Manager { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; }
 
@@ -43,24 +66,38 @@ namespace Documents.Models.Entities
 
         public virtual ICollection<Template> Templates { get; set; }
 
-        public string Email { get; set; }
 
         public string GetFIO()
         {
-            return Fathersname != null ? $"{Lastname} {Firstname[0]}. {Firstname[0]}." : $"{Lastname} {Firstname[0]}.";
+            return Fathersname.Length != 0 ? $"{Lastname} {Firstname[0]}. {Fathersname[0]}." : $"{Lastname} {Firstname[0]}.";
         }
 
 
         public static User CreateAdmin(string firstname, string lastname, string fathersname) =>
-            new User() { Firstname = firstname, Lastname = lastname, Fathersname = firstname, Permissions = (byte)PermissionFlag.FullAccess };
+            new User() 
+            { 
+                Firstname = firstname, 
+                Lastname = lastname, 
+                Fathersname = fathersname, 
+                Permissions = (byte)PermissionFlag.FullAccess, 
+                CWID = "00000000",
+                Email = Properties.Settings.Default.EmailFrom
+            };
 
         public static User CreateAdmin() =>
-            new User() { Firstname = "Admin", Lastname = "Admin", Fathersname = "Admin", Permissions = (byte)PermissionFlag.FullAccess };
+            new User() 
+            { 
+                Firstname = " ", 
+                Lastname = "Admin", 
+                Permissions = (byte)PermissionFlag.FullAccess, 
+                CWID = "00000000",
+                Email = Properties.Settings.Default.EmailFrom
+            };
 
 
         public override string ToString()
         {
-            return $"{Id} - {GetFIO()}";
+            return $"{CWID} - {GetFIO()}";
         }
     }
 }

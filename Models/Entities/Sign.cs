@@ -13,9 +13,26 @@ namespace Documents.Models.Entities
         [Required]
         public int DocumentId { get; set; }
 
-        public int? UserId { get; set; }
+        [Column("User_CWID")]
+        public string UserCWID { get; set; }
+        public virtual User User { get; set; }
 
+        [Required]
+        [Column("Initiator_CWID")]
+        public string InitiatorCWID { get; set; }
+        public virtual User Initiator { get; set; }
+
+        [Required]
+        public int SignerPositionId { get; set; }
+        public virtual Position SignerPosition { get; set; }
+
+
+        [Required]
+        public System.DateTime UpdateDate { get; set; }
+        [Required]
+        public System.DateTime CreateDate { get; set; }
         public bool? Signed { get; set; }
+
 
         [Newtonsoft.Json.JsonIgnore]
         public virtual Document Document { get; set; }
@@ -23,34 +40,10 @@ namespace Documents.Models.Entities
         [NotMapped]
         public string DocumentName => Document.Name;
 
-       
-        public virtual User User { get; set; }
-
-        //[NotMapped]
-        //public virtual string SignerShortname => User.GetFIO();
-
-        [Required]
-        public int SignerPositionId { get; set; }
-
-        public virtual Position SignerPosition { get; set; }
-
-        [Required]
-        public int InitiatorId { get; set; }
-
-        public virtual User Initiator { get; set; }
-
-       // [NotMapped]
-        //public virtual string InitiatorShortname => Initiator.GetFIO();
-
-        [Required]
-        public System.DateTime UpdateDate { get; set; }
-        [Required]
-        public System.DateTime CreateDate { get; set; }
-
 
         public override string ToString()
         {
-            return $"{DocumentId} - {UserId}";
+            return $"{DocumentId} - {UserCWID}";
         }
     }
 }

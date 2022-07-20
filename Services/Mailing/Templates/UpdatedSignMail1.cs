@@ -7,7 +7,7 @@
 //     повторного создания кода.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Documents.Services.MailTemplates
+namespace Documents.Services.Mailing.Templates
 {
     using System;
     
@@ -15,7 +15,7 @@ namespace Documents.Services.MailTemplates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+    #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "17.0.0.0")]
     public partial class UpdatedSignMail : UpdatedSignMailBase
     {
@@ -25,64 +25,65 @@ namespace Documents.Services.MailTemplates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("\r\n<html><body>\r\n<strong>Новый статус документа</strong><br>\r\nУважаемый ");
+            this.Write("\n");
+            this.Write("\n\n<html><body>\n<strong>Новый статус документа</strong><br>\nУважаемый ");
             
-            #line 6 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(InitiatorFirstname));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 6 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(InitiatorFathersname));
             
             #line default
             #line hidden
-            this.Write("!<br>\r\nПодписант ");
+            this.Write("!<br>\nПодписант ");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(SignerShortname));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(Message));
             
             #line default
             #line hidden
             this.Write(" Ваш документ <a href=\'");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(BaseUrl));
             
             #line default
             #line hidden
             this.Write("/documents/");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(DocumentId));
             
             #line default
             #line hidden
             this.Write("\'>");
             
-            #line 7 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(DocumentName));
             
             #line default
             #line hidden
-            this.Write("</a>. \r\nВы можете, проверить статус документа в <a href=\'");
+            this.Write("</a>. \nВы можете, проверить статус документа в <a href=\'");
             
-            #line 8 "C:\Users\iliat\Source\Repos\IliaTrofimov\Documents-notifications\Templates\UpdatedSignMail.tt"
+            #line 1 "C:\Users\EHHLK\OneDrive - Bayer\Personal Data\appdocs-back\Services\Mailing\Templates\UpdatedSignMail.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(BaseUrl));
             
             #line default
             #line hidden
-            this.Write("/home\'>личном кабинете</a>.<br><br>\r\n<small>Это письмо было создано автоматически" +
-                    ", не нужно на него отвечать.</small>\r\n</body></html>");
+            this.Write("/home\'>личном кабинете</a>.<br><br>\n<small>Это письмо было создано автоматически," +
+                    " не нужно на него отвечать.</small>\n</body></html>");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -112,10 +112,12 @@ namespace Documents.Controllers
         [HttpGet]
         [ActionName("count")] 
         [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> Count(int user = -1, int type = -1, bool showDepricated = true)
+        public async Task<IHttpActionResult> Count(string user = null,
+                                                   int type = -1,
+                                                   bool showDepricated = true)
         {
             int count = await db.Templates.CountAsync(t => (type == -1 || t.TemplateTypeId == type) &&
-                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated));
+                            (user == null || t.AuthorCWID == user) && (showDepricated || !t.Depricated));
             return Ok(count);
         }
 
@@ -123,18 +125,22 @@ namespace Documents.Controllers
         [HttpGet]
         [ActionName("list")]
         [ResponseType(typeof(IEnumerable<TemplateDTO>))]
-        public async Task<IHttpActionResult> Get(int page = 0, int pageSize = -1, int user = -1, int type = -1, bool showDepricated = true)
+        public IHttpActionResult Get(int page = 0,
+                                                 int pageSize = -1,
+                                                 string user = null,
+                                                 int type = -1,
+                                                 bool showDepricated = true)
         {
             List<Template> templates;
             if (pageSize != -1)
-                templates = await db.Templates.OrderBy(t => t.Id)
+                templates = db.Templates.OrderBy(t => t.Id)
                     .Skip(page * pageSize)
                     .Take(pageSize)
                     .Where(t => (type == -1 || t.TemplateTypeId == type) && 
-                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated)).ToListAsync();
+                            (user == null || t.AuthorCWID == user) && (showDepricated || !t.Depricated)).ToList();
             else
-                templates = await db.Templates.Where(t => (type == -1 || t.TemplateTypeId == type) &&
-                            (user == -1 || t.AuthorId == user) && (showDepricated || !t.Depricated)).ToListAsync();
+                templates = db.Templates.Where(t => (type == -1 || t.TemplateTypeId == type) &&
+                            (user == null || t.AuthorCWID == user) && (showDepricated || !t.Depricated)).ToList();
 
             if (templates == null)
                 throw new HttpResponseException(HttpStatusCode.NoContent);
@@ -174,7 +180,8 @@ namespace Documents.Controllers
                 Name = body.Name, 
                 TemplateTypeId = body.TemplateTypeId,
                 UpdateDate = System.DateTime.Now,
-                AuthorId = user.Id
+                AuthorCWID = user.CWID,
+                Path = body.Path,
             });
             await db.SaveChangesAsync();
             return Ok(template.Id);
@@ -195,6 +202,7 @@ namespace Documents.Controllers
             found.UpdateDate = System.DateTime.Now;
             found.Depricated = template.Depricated;
             found.Name = template.Name;
+            found.Path = template.Path;
             found.TemplateTypeId = template.TemplateTypeId;
 
             await db.SaveChangesAsync();      

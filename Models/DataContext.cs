@@ -20,6 +20,9 @@ namespace Documents.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
 
+        public virtual DbSet<HtmlTemplate> HtmlTemplates { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             var convention = new AttributeToColumnAnnotationConvention<DefaultValueAttribute, string>(
@@ -34,7 +37,9 @@ namespace Documents.Models
             modelBuilder.Entity<Sign>()
                 .HasRequired<User>(s => s.User)
                 .WithMany(u => u.Signs)
-                .HasForeignKey(s => s.UserId);
+                .HasForeignKey(s => s.UserCWID);
+
+            Configuration.LazyLoadingEnabled = true;
         }
     }
 }
